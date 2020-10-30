@@ -43,7 +43,18 @@ public class BombermanGame extends Application {
 
         // Tao scene
         Scene scene = new Scene(root);
-
+        scene.setOnKeyPressed(keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case D: entities.get(0).setX(entities.get(0).getX() + 1);
+                    break;
+                case A: entities.get(0).setX(entities.get(0).getX() - 1);
+                    break;
+                case W: entities.get(0).setY(entities.get(0).getY() - 1);
+                    break;
+                case S: entities.get(0).setY(entities.get(0).getY() + 1);
+                    break;
+            }
+        });
         // Them scene vao stage
         stage.setScene(scene);
         stage.show();

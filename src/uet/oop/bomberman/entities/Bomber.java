@@ -67,7 +67,7 @@ public class Bomber extends Entity {
 
 
         scene.setOnKeyPressed(event ->  {
-            
+
                 switch (event.getCode()) {
                     case A:
                         indexImg[0]++;

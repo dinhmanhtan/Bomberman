@@ -1,5 +1,6 @@
 package uet.oop.bomberman.entities;
 
+import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -8,8 +9,8 @@ import javafx.scene.paint.Color;
 import uet.oop.bomberman.graphics.Sprite;
 
 public abstract class Entity {
-    protected int x;
-    protected int y;
+    protected double x;
+    protected double y;
     protected Image img;
 
     public Entity( int x, int y, Image img) {
@@ -17,31 +18,40 @@ public abstract class Entity {
         this.y = y;
         this.img = img;
     }
-
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public void render(GraphicsContext gc) {
-        SnapshotParameters params = new SnapshotParameters();
-        params.setFill(Color.TRANSPARENT);
-
-        ImageView iv = new ImageView(img);
-        Image base = iv.snapshot(params, null);
-
-        gc.drawImage(base, x * Sprite.SCALED_SIZE, y * Sprite.SCALED_SIZE);
+    public Image getImg() {
+        return img;
     }
-    public abstract void update();
+
+    public void setImg(Image img) {
+        this.img = img;
+    }
+
+
+    public void render(GraphicsContext gc) {
+//        SnapshotParameters params = new SnapshotParameters();
+//        params.setFill(Color.TRANSPARENT);
+//
+//        ImageView iv = new ImageView(img);
+//        Image base = iv.snapshot(params, null);
+
+        gc.drawImage(img, x * Sprite.SCALED_SIZE, y * Sprite.SCALED_SIZE);
+
+    }
+    public abstract  void update(Scene scene, double time) ;
 }

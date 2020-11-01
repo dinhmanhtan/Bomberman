@@ -19,8 +19,8 @@ import java.util.Scanner;
 
 public class BombermanGame extends Application {
     
-    public static final int WIDTH = 13;
-    public static final int HEIGHT = 31;
+    public static final int WIDTH = 31;
+    public static final int HEIGHT = 13;
     public static List<String> s;
 
     static {
@@ -35,6 +35,8 @@ public class BombermanGame extends Application {
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
     private List<Entity> stillObjects = new ArrayList<>();
+    private Scene scene;
+    private Bomber bomberman;
 
 
     public static void main(String[] args) {
@@ -52,35 +54,25 @@ public class BombermanGame extends Application {
         root.getChildren().add(canvas);
 
         // Tao scene
-        Scene scene = new Scene(root);
-        scene.setOnKeyPressed(keyEvent -> {
-            switch (keyEvent.getCode()) {
-                case D: entities.get(0).setX(entities.get(0).getX() + 1);
-                    break;
-                case A: entities.get(0).setX(entities.get(0).getX() - 1);
-                    break;
-                case W: entities.get(0).setY(entities.get(0).getY() - 1);
-                    break;
-                case S: entities.get(0).setY(entities.get(0).getY() + 1);
-                    break;
-            }
-        });
+        scene = new Scene(root);
+
         // Them scene vao stage
         stage.setScene(scene);
         stage.show();
 
-        AnimationTimer timer = new AnimationTimer() {
+       new AnimationTimer()  {
             @Override
             public void handle(long l) {
                 render();
                 update();
+
             }
-        };
-        timer.start();
+        }.start();
+
 
         createMap();
 
-        Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+        bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         entities.add(bomberman);
     }
 
@@ -95,13 +87,13 @@ public class BombermanGame extends Application {
 //                    object = new Grass(i, j, Sprite.grass.getFxImage());
 //                }
                   if (s.get(i).charAt(j) == '#') {
-                      object = new Wall(i, j, Sprite.wall.getFxImage());
+                      object = new Wall(j, i, Sprite.wall.getFxImage());
                   }
                   else if (s.get(i).charAt(j) == '*') {
-                      object = new Brick(i, j, Sprite.brick.getFxImage());
+                      object = new Brick(j, i, Sprite.brick.getFxImage());
                   }
                   else {
-                      object = new Grass(i, j, Sprite.grass.getFxImage());
+                      object = new Grass(j, i, Sprite.grass.getFxImage());
                   }
                 stillObjects.add(object);
             }
@@ -109,7 +101,12 @@ public class BombermanGame extends Application {
     }
 
     public void update() {
-        entities.forEach(Entity::update);
+       // entities.forEach(Entity::update(scene,0));
+       // bomberman.update(scene,0);
+
+       for (Entity entity : entities) {
+           entity.update(scene,0);
+       }
     }
 
     public void render() {
@@ -120,7 +117,7 @@ public class BombermanGame extends Application {
 
     public static List<String> insert() throws FileNotFoundException {
         List<String> s = new ArrayList<>();
-        Scanner scanner = new Scanner(new File("E:\\New folder (4)\\Bomberman\\res\\levels\\level.txt"));
+        Scanner scanner = new Scanner(new File("res/levels/Level.txt"));
         while (scanner.hasNext()) {
             String a = scanner.nextLine();
             s.add(a);

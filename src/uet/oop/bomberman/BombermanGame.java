@@ -41,7 +41,9 @@ public class BombermanGame extends Application {
     private List<Entity> stillObjects = new ArrayList<>();
     private Scene scene;
     private Bomber bomberman;
+    private Balloom balloom;
     private List<Grass> grassList = new ArrayList<>();
+    private List<Entity> monsters = new ArrayList<>();
 
 
     public static void main(String[] args) {
@@ -87,6 +89,8 @@ public class BombermanGame extends Application {
 
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         entities.add(bomberman);
+        balloom = new Balloom(15, 10, Sprite.balloom_right1.getFxImage());
+        monsters.add(balloom);
     }
 
     public void createMap() {
@@ -119,6 +123,7 @@ public class BombermanGame extends Application {
     public void update() {
        // entities.forEach(Entity::update(scene,0));
         bomberman.update(scene,deltaTime,stillObjects);
+        balloom.update(deltaTime,stillObjects);
 
 //       for (Entity entity : entities) {
 //           entity.update(scene,deltaTime);
@@ -130,6 +135,7 @@ public class BombermanGame extends Application {
         grassList.forEach(g -> g.render(gc));
         stillObjects.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
+        monsters.forEach(g -> g.render(gc));
 
     }
 

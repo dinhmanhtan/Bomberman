@@ -53,5 +53,7 @@ public abstract class Entity {
         gc.drawImage(img, x * Sprite.SCALED_SIZE, y * Sprite.SCALED_SIZE);
 
     }
+
+
     public abstract  void update(Scene scene, double time) ;
 }

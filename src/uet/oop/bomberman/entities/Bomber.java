@@ -14,11 +14,13 @@ import uet.*;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.util.List;
+
 public class Bomber extends Entity {
 
     public enum State{Left,Up,Right,Down}
     public  State state ;
-    public static  double totalTime ;
+    public static  float totalTime ;
 
     public boolean move;
     public Image[] player_right, player_left,player_down, player_up;
@@ -29,11 +31,17 @@ public class Bomber extends Entity {
         Init();
     }
 
+    @Override
+    public void update(Scene scene, double time) {
 
+    }
 
+    /**
+     *   Khởi tạo các thuộc tính
+     */
     public void Init(){
 
-        totalTime =0.0;
+        totalTime =0.0f;
         move =false;
 
         player_right = new Image[3];
@@ -61,56 +69,124 @@ public class Bomber extends Entity {
         indexImg[0] = indexImg[1] = indexImg[2] = indexImg[3] = 0;
     }
 
+    /**
+     *  Check vị trị chạm tường
+     */
+    boolean CheckPos(List<Entity> stillObjects) {
 
-    @Override
-    public void update(Scene scene,double deltaTime) {
+        for(Entity entity : stillObjects) {
 
+            if(state == State.Right && (int)(x+1-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
+               return true;
+
+            if(state == State.Left && (int)(x-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
+                return true;
+            if(state == State.Up && (int)(x+0.25) == (int)entity.x && (int)(y-0.25) == (int)entity.y)
+                return true;
+            if(state == State.Down && (int)(x+0.25) == (int)entity.x && (int)(y+1) == (int)entity.y)
+                return true;
+
+        }
+       return false;
+    }
+
+
+
+    public void update(Scene scene,double deltaTime,List<Entity> stillObjects) {
+        totalTime += deltaTime;
 
         scene.setOnKeyPressed(event ->  {
 
                 switch (event.getCode()) {
                     case A:
                         indexImg[0]++;
-
-                        if (x > 1) {
-                            x -= 1 / 3.0;
-                            setImg(player_left[indexImg[0] % 3]);
-
-                        }
+                        state = State.Left;
+                        move = true;
                         break;
 
                     case D:
                         indexImg[1]++;
-
-                        if (x < BombermanGame.WIDTH - 2) {
-                            x += 1 / 3.0;
-                            setImg(player_right[indexImg[1] % 3]);
-
-                        }
+                        state = State.Right;
+                        move = true;
                         break;
 
                     case W:
                         indexImg[2]++;
-
-                        if (y > 1) {
-                            y -= 1 / 3.0;
-                            setImg(player_up[indexImg[2] % 3]);
-                        }
+                        state = State.Up;
+                        move = true;
                         break;
 
                     case S:
                         indexImg[3]++;
-                        if (y < BombermanGame.HEIGHT - 2) {
-
-                            y += 1 / 3.0;
-                            setImg(player_down[indexImg[3] % 3]);
-
-                        }
+                        state = State.Down;
+                        move = true;
                         break;
                 }
 
         });
 
+       Moving(stillObjects);
+
+
+    }
+
+    /**
+     *  Hàm di chuyển
+     */
+    public void Moving(List<Entity> stillObjects) {
+        if(move  && totalTime >= 0.055)   {
+
+            if(state == State.Left) {
+                if(x > 1  && !CheckPos(stillObjects)) {
+
+                    if(y - (int)y == 0.25)
+                        y = (int) y;
+                    else if(y - (int)y == 0.75)      // Check vị trí sát mép tường cho phép di chuyển
+                        y = (int) y + 1;
+
+                    x -= 0.25;
+                }
+                setImg(player_left[indexImg[0] % 3]);
+
+            } else  if(state == State.Right) {
+                if(x < BombermanGame.WIDTH - 2 && !CheckPos(stillObjects) ) {
+                    if(y - (int)y == 0.25)
+                        y = (int) y;
+                    else if(y - (int)y == 0.75)
+                        y = (int) y + 1;
+
+                    x += 0.25;
+                }
+                setImg(player_right[indexImg[1] % 3]);
+            } else if(state == State.Down ) {
+                if (y < BombermanGame.HEIGHT - 2 && !CheckPos(stillObjects)) {
+
+                    if(x - (int)x == 0.5)
+                        x -= 0.25;
+                    else if(x - (int)x == 0.75)
+                        x = (int) x + 1;
+
+                    y += 0.25;
+                }
+                setImg(player_down[indexImg[3] % 3]);
+
+            } else if(state == State.Up ) {
+                if(y >= 1  && !CheckPos(stillObjects)) {
+
+                    if(x - (int)x == 0.5)
+                        x -= 0.25;
+                    else if(x - (int)x == 0.75)
+                        x = (int) x + 1;
+
+
+                    y -= 0.25;
+                }
+                setImg(player_up[indexImg[2] % 3]);
+            }
+            System.out.println(  x + "   " + y);
+            totalTime = 0.0f;
+            move = false;
+        }
 
     }
 

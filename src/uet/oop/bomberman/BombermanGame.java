@@ -23,6 +23,10 @@ public class BombermanGame extends Application {
     public static final int HEIGHT = 13;
     public static List<String> s;
 
+    float prevTime =0.0f;
+    float deltaTime = 0.0f;
+    float totalTime = 0.0f;
+
     static {
         try {
             s = insert();
@@ -37,6 +41,7 @@ public class BombermanGame extends Application {
     private List<Entity> stillObjects = new ArrayList<>();
     private Scene scene;
     private Bomber bomberman;
+    private List<Grass> grassList = new ArrayList<>();
 
 
     public static void main(String[] args) {
@@ -60,11 +65,19 @@ public class BombermanGame extends Application {
         stage.setScene(scene);
         stage.show();
 
+
        new AnimationTimer()  {
             @Override
-            public void handle(long l) {
-                render();
+            public void handle(long now) {
+
+              if(prevTime == 0) {
+                  prevTime = now;
+              }
+                deltaTime = (now - prevTime)/1000000000;
+                prevTime = now;
+
                 update();
+                render();
 
             }
         }.start();
@@ -88,31 +101,36 @@ public class BombermanGame extends Application {
 //                }
                   if (s.get(i).charAt(j) == '#') {
                       object = new Wall(j, i, Sprite.wall.getFxImage());
+                      stillObjects.add(object);
                   }
                   else if (s.get(i).charAt(j) == '*') {
                       object = new Brick(j, i, Sprite.brick.getFxImage());
+                      stillObjects.add(object);
                   }
                   else {
-                      object = new Grass(j, i, Sprite.grass.getFxImage());
+                     Grass grass = new Grass(j, i, Sprite.grass.getFxImage());
+                     grassList.add(grass);
                   }
-                stillObjects.add(object);
+
             }
         }
     }
 
     public void update() {
        // entities.forEach(Entity::update(scene,0));
-       // bomberman.update(scene,0);
+        bomberman.update(scene,deltaTime,stillObjects);
 
-       for (Entity entity : entities) {
-           entity.update(scene,0);
-       }
+//       for (Entity entity : entities) {
+//           entity.update(scene,deltaTime);
+//       }
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        grassList.forEach(g -> g.render(gc));
         stillObjects.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
+
     }
 
     public static List<String> insert() throws FileNotFoundException {

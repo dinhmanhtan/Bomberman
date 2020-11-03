@@ -8,12 +8,21 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import uet.oop.bomberman.graphics.Sprite;
 
-public abstract class Entity {
+public  class Entity {
     protected double x;
     protected double y;
     protected Image img;
 
-    public Entity( int x, int y, Image img) {
+    protected boolean draw;
+
+    public Entity() {}
+
+    public Entity(double x,double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public Entity( double x, double y, Image img) {
         this.x = x;
         this.y = y;
         this.img = img;
@@ -31,6 +40,19 @@ public abstract class Entity {
     }
 
     public void setY(double y) {
+        this.y = y;
+    }
+
+    public boolean isDraw() {
+        return draw;
+    }
+
+    public void setDraw(boolean draw) {
+        this.draw = draw;
+    }
+
+    public void setXY(double x, double y) {
+        this.x = x;
         this.y = y;
     }
 
@@ -55,5 +77,5 @@ public abstract class Entity {
     }
 
 
-    public abstract  void update(Scene scene, double time) ;
+    public  void update(Scene scene, double time) {}
 }

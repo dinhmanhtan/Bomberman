@@ -37,18 +37,33 @@ public class BombermanGame extends Application {
 
     private GraphicsContext gc;
     private Canvas canvas;
-    private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
-    private Scene scene;
-    private Bomber bomberman;
-    private Balloom balloom;
-    private List<Grass> grassList = new ArrayList<>();
-    private List<Entity> monsters = new ArrayList<>();
+    protected List<Entity> entities = new ArrayList<>();
+    protected List<Entity> stillObjects = new ArrayList<>();
+    protected Scene scene;
+    protected Bomber bomberman;
+    protected Balloom balloom;
+    protected List<Grass> grassList = new ArrayList<>();
+    protected List<Entity> monsters = new ArrayList<>();
 
+
+    protected Bomb bomb;
+
+    public static boolean[][] hasWall;
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }
+
+   public void Init() {
+       bomb = new Bomb();
+
+       hasWall = new boolean[HEIGHT][WIDTH];   // lưu vị trí các wall,brick
+
+       bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+       entities.add(bomberman);
+       balloom = new Balloom(15, 10, Sprite.balloom_right1.getFxImage());
+       monsters.add(balloom);
+   }
 
     @Override
     public void start(Stage stage) {
@@ -67,7 +82,7 @@ public class BombermanGame extends Application {
         stage.setScene(scene);
         stage.show();
 
-
+        Init();
        new AnimationTimer()  {
             @Override
             public void handle(long now) {
@@ -87,34 +102,29 @@ public class BombermanGame extends Application {
 
         createMap();
 
-        bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-        entities.add(bomberman);
-        balloom = new Balloom(15, 10, Sprite.balloom_right1.getFxImage());
-        monsters.add(balloom);
+
     }
 
     public void createMap() {
         for (int i = 0; i < s.size(); i++) {
             for (int j = 0; j < s.get(i).length(); j++) {
-                Entity object;
-//                if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
-//                    object = new Wall(i, j, Sprite.wall.getFxImage());
-//                }
-//                else {
-//                    object = new Grass(i, j, Sprite.grass.getFxImage());
-//                }
+
+                hasWall[i][j] = false;
+
+
                   if (s.get(i).charAt(j) == '#') {
-                      object = new Wall(j, i, Sprite.wall.getFxImage());
+                    Wall  object = new Wall(j, i, Sprite.wall.getFxImage());
                       stillObjects.add(object);
+                      hasWall[i][j] = true;
                   }
                   else if (s.get(i).charAt(j) == '*') {
-                      object = new Brick(j, i, Sprite.brick.getFxImage());
+                     Brick object = new Brick(j, i, Sprite.brick.getFxImage());
+                      hasWall[i][j] = true;
                       stillObjects.add(object);
                   }
-                  else {
+
                      Grass grass = new Grass(j, i, Sprite.grass.getFxImage());
                      grassList.add(grass);
-                  }
 
             }
         }
@@ -122,8 +132,10 @@ public class BombermanGame extends Application {
 
     public void update() {
        // entities.forEach(Entity::update(scene,0));
-        bomberman.update(scene,deltaTime,stillObjects);
+        bomberman.update(scene,deltaTime,stillObjects,bomb);
         balloom.update(deltaTime,stillObjects);
+
+        bomb.update(scene,deltaTime,hasWall,stillObjects);
 
 //       for (Entity entity : entities) {
 //           entity.update(scene,deltaTime);
@@ -134,8 +146,12 @@ public class BombermanGame extends Application {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         grassList.forEach(g -> g.render(gc));
         stillObjects.forEach(g -> g.render(gc));
-        entities.forEach(g -> g.render(gc));
         monsters.forEach(g -> g.render(gc));
+
+        if(bomb.isDraw())
+            bomb.Render(gc);
+
+        entities.forEach(g -> g.render(gc));
 
     }
 

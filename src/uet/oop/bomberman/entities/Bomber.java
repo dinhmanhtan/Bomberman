@@ -12,7 +12,7 @@ public class Bomber extends Entity {
 
     public enum State{Left,Up,Right,Down}
     public  State state ;
-    public static  float totalTime ;
+    public static  double totalTime ;
 
     public boolean move;
     public Image[] player_right, player_left,player_down, player_up;
@@ -33,7 +33,7 @@ public class Bomber extends Entity {
      */
     public void Init(){
 
-        totalTime =0.0f;
+        totalTime =0.0;
         move =false;
 
         player_right = new Image[3];
@@ -83,7 +83,7 @@ public class Bomber extends Entity {
 
 
 
-    public void update(Scene scene,double deltaTime,List<Entity> stillObjects) {
+    public void update(Scene scene,double deltaTime,List<Entity> stillObjects,Bomb bomb) {
         totalTime += deltaTime;
 
         scene.setOnKeyPressed(event ->  {
@@ -111,6 +111,10 @@ public class Bomber extends Entity {
                         indexImg[3]++;
                         state = State.Down;
                         move = true;
+                        break;
+                    case SPACE:
+                        bomb.setXY((int)x,(int)(y+0.25));
+                        bomb.setDraw(true);
                         break;
                 }
 

@@ -15,6 +15,9 @@ public  class Entity {
 
     protected boolean draw;
 
+    enum  State {Up, Down, Right, Left}
+    protected State state;
+
     public Entity() {}
 
     public Entity(double x,double y) {
@@ -64,6 +67,13 @@ public  class Entity {
         this.img = img;
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
 
     public void render(GraphicsContext gc) {
 //        SnapshotParameters params = new SnapshotParameters();
@@ -77,5 +87,5 @@ public  class Entity {
     }
 
 
-    public  void update(Scene scene, double time) {}
+    public  void update(double time) {}
 }

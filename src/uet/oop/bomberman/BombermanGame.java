@@ -27,19 +27,15 @@ public class BombermanGame extends Application {
     float deltaTime = 0.0f;
     float totalTime = 0.0f;
 
-    static {
-        try {
-            s = insert();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+    static public Scene scene;
+
+
 
     private GraphicsContext gc;
     private Canvas canvas;
     protected List<Entity> entities = new ArrayList<>();
     protected List<Entity> stillObjects = new ArrayList<>();
-    protected Scene scene;
+
     protected Bomber bomberman;
     protected Balloom balloom;
     protected List<Grass> grassList = new ArrayList<>();
@@ -54,15 +50,23 @@ public class BombermanGame extends Application {
         Application.launch(BombermanGame.class);
     }
 
-   public void Init() {
-       bomb = new Bomb();
+    public void Init() {
 
-       hasWall = new boolean[HEIGHT][WIDTH];   // lưu vị trí các wall,brick
 
-       bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-       entities.add(bomberman);
-       balloom = new Balloom(15, 10, Sprite.balloom_right1.getFxImage());
-       monsters.add(balloom);
+        try {
+               s = insert();
+        } catch (FileNotFoundException e) {
+               e.printStackTrace();
+        }
+
+        bomb = new Bomb();
+
+        hasWall = new boolean[HEIGHT][WIDTH];   // lưu vị trí các wall,brick
+
+        bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+        entities.add(bomberman);
+        balloom = new Balloom(2, 5, Sprite.balloom_right1.getFxImage());
+        monsters.add(balloom);
    }
 
     @Override
@@ -132,10 +136,10 @@ public class BombermanGame extends Application {
 
     public void update() {
        // entities.forEach(Entity::update(scene,0));
-        bomberman.update(scene,deltaTime,stillObjects,bomb,monsters,entities);
+        bomberman.update(deltaTime,stillObjects,bomb,monsters);
         balloom.update(deltaTime,stillObjects);
 
-        bomb.update(deltaTime,hasWall,stillObjects);
+        bomb.update(deltaTime,stillObjects);
 
 //       for (Entity entity : entities) {
 //           entity.update(scene,deltaTime);
@@ -150,8 +154,8 @@ public class BombermanGame extends Application {
 
         if(bomb.isDraw())
             bomb.Render(gc);
-
-        entities.forEach(g -> g.render(gc));
+        if(bomberman.isDraw())
+           bomberman.render(gc);
 
     }
 

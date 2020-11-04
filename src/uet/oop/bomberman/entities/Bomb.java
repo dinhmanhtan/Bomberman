@@ -3,6 +3,7 @@ package uet.oop.bomberman.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.List;
@@ -98,7 +99,7 @@ public class Bomb extends Entity{
 
 
 
-    public void  Animation(double deltaTime,boolean[][] hasWall,List<Entity> stillObject) {
+    public void  Animation(double deltaTime,List<Entity> stillObject) {
 
         if( draw ) {
             timeBomb += deltaTime;
@@ -127,10 +128,10 @@ public class Bomb extends Entity{
 
                     Brick.Animation(stillObject,(int)x,(int)y,j%3);
 
-                    for(int k=0; k<3; k++) {
-                        bomb_horizontal[k].setDraw(!hasWall[(int) bomb_horizontal[k].getY()][(int) bomb_horizontal[k].getX()]);
+                 for(int k=0; k<3; k++) {
+                    bomb_horizontal[k].setDraw(!BombermanGame.hasWall[(int)bomb_horizontal[k].getY()][(int) bomb_horizontal[k].getX()]);
 
-                        bomb_vertical[k].setDraw(!hasWall[(int) bomb_vertical[k].getY()][(int) bomb_vertical[k].getX()]);
+                    bomb_vertical[k].setDraw(!BombermanGame.hasWall[(int)bomb_vertical[k].getY()][(int) bomb_vertical[k].getX()]);
 
                     }
                 }
@@ -159,8 +160,8 @@ public class Bomb extends Entity{
     }
 
 
-    public void update( double time,boolean[][] hasWall,List<Entity> stillObject) {
-        Animation(time,hasWall,stillObject);
+    public void update( double time,List<Entity> stillObject) {
+        Animation(time,stillObject);
 
     }
 }

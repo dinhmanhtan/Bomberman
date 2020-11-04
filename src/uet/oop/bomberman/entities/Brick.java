@@ -68,7 +68,7 @@ public class Brick extends Entity {
 
 
     @Override
-    public void update(Scene scene, double time) {
+    public void update(double time) {
 
     }
 

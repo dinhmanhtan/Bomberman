@@ -10,10 +10,9 @@ import java.util.List;
 
 public class Bomber extends Entity {
     private boolean dead;
-    public enum State{Left,Up,Right,Down}
-    public  State state ;
+
     public static  double totalTime ;
-    public static double totaldead;
+    public static double timeDead;
 
     public boolean move;
     public Image[] player_right, player_left,player_down, player_up;
@@ -26,7 +25,7 @@ public class Bomber extends Entity {
     }
 
     @Override
-    public void update(Scene scene, double time) {
+    public void update( double time) {
 
     }
 
@@ -36,8 +35,9 @@ public class Bomber extends Entity {
     public void Init(){
         dead = false;
         totalTime =0.0;
-        totaldead = 0.0;
+        timeDead = 0.0;
         move =false;
+        draw = true;
 
         player_right = new Image[3];
         player_left = new Image[3];
@@ -91,20 +91,15 @@ public class Bomber extends Entity {
 
 
 
-    public void update(Scene scene
-            ,double deltaTime
-            ,List<Entity> stillObjects
-            ,Bomb bomb
-            ,List <Entity> monster
-            ,List <Entity> entities) {
+    public void update(double deltaTime,List<Entity> stillObjects,Bomb bomb,List <Entity> monster) {
         deadbymonster(monster);
         if(dead) {
-            totaldead += deltaTime;
-            AnimationDead( 1, entities);
+            timeDead += deltaTime;
+            AnimationDead( 1);
         }
         else {
             totalTime += deltaTime;
-            scene.setOnKeyPressed(event -> {
+            BombermanGame.scene.setOnKeyPressed(event -> {
 
                 switch (event.getCode()) {
                     case A:
@@ -213,35 +208,34 @@ public class Bomber extends Entity {
     }
 
     public boolean CheckDead(List <Entity> monster) {
+
         for (Entity entity : monster)
-        {
-            if( (int)(x+1-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
-                return true;
-            if(  (int)(x-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
-                return true;
-            if( (int)(x+0.25) == (int)entity.x && (int)(y-0.25) == (int)entity.y)
-                return true;
-            if(  (int)(x+0.25) == (int)entity.x && (int)(y+1) == (int)entity.y)
-                return true;
-        }
+            if ((entity.getState() == State.Down || entity.getState() == State.Up)) {
+
+                if ((x >= entity.x) && (x - entity.x) < 1 && Math.abs(y - entity.y) < 1)
+                    return true;
+
+                if (entity.x > x && entity.x - x < 0.75 && Math.abs(y - entity.y) < 1)
+                    return true;
+            } else if( Math.abs(entity.y - y )< 1 &&  Math.abs(x - entity.x) < 0.75)
+                   return  true;
+
+
+
         return false;
     }
 
-    public void AnimationDead(double time, List<Entity> entities) {
-        if(totaldead < 3 * time) {
+    public void AnimationDead(double time) {
+        if(timeDead < 3 * time) {
             for (int i = 0 ; i < 3 ; i++) {
-                if(totaldead >= i * time) {
+                if(timeDead >= i * time) {
                     this.setImg(player_dead[i]);
                 }
             }
         }
-        else {
-            Entity entity = entities.get(0);
-            if(entity instanceof Bomber) {
-                entities.remove(0);
-                BombermanGame.hasWall[(int) entity.y][(int) entity.x] = false;
-            }
+        else draw = false;
+
         }
-    }
+
 
 }

@@ -9,13 +9,15 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.util.List;
 
 public class Bomber extends Entity {
-
+    private boolean dead;
     public enum State{Left,Up,Right,Down}
     public  State state ;
     public static  double totalTime ;
+    public static double totaldead;
 
     public boolean move;
     public Image[] player_right, player_left,player_down, player_up;
+    public Image[] player_dead;
     public int[] indexImg;
 
     public Bomber(int x, int y, Image img) {
@@ -32,14 +34,16 @@ public class Bomber extends Entity {
      *   Khởi tạo các thuộc tính
      */
     public void Init(){
-
+        dead = false;
         totalTime =0.0;
+        totaldead = 0.0;
         move =false;
 
         player_right = new Image[3];
         player_left = new Image[3];
         player_down = new Image[3];
         player_up = new Image[3];
+        player_dead = new Image[3];
 
         player_right[0] = Sprite.player_right.getFxImage();
         player_right[1] = Sprite.player_right_1.getFxImage();
@@ -57,6 +61,10 @@ public class Bomber extends Entity {
         player_down[1] = Sprite.player_down_1.getFxImage();
         player_down[2] = Sprite.player_down_2.getFxImage();
 
+        player_dead[0] = Sprite.player_dead1.getFxImage();
+        player_dead[1] = Sprite.player_dead2.getFxImage();
+        player_dead[2] = Sprite.player_dead3.getFxImage();
+
         indexImg = new int[4];
         indexImg[0] = indexImg[1] = indexImg[2] = indexImg[3] = 0;
     }
@@ -64,7 +72,7 @@ public class Bomber extends Entity {
     /**
      *  Check vị trị chạm tường
      */
-    boolean CheckPos(List<Entity> stillObjects) {
+    public boolean CheckPos(List<Entity> stillObjects) {
 
         for(Entity entity : stillObjects) {
 
@@ -83,10 +91,20 @@ public class Bomber extends Entity {
 
 
 
-    public void update(Scene scene,double deltaTime,List<Entity> stillObjects,Bomb bomb) {
-        totalTime += deltaTime;
-
-        scene.setOnKeyPressed(event ->  {
+    public void update(Scene scene
+            ,double deltaTime
+            ,List<Entity> stillObjects
+            ,Bomb bomb
+            ,List <Entity> monster
+            ,List <Entity> entities) {
+        deadbymonster(monster);
+        if(dead) {
+            totaldead += deltaTime;
+            AnimationDead( 1, entities);
+        }
+        else {
+            totalTime += deltaTime;
+            scene.setOnKeyPressed(event -> {
 
                 switch (event.getCode()) {
                     case A:
@@ -113,14 +131,16 @@ public class Bomber extends Entity {
                         move = true;
                         break;
                     case SPACE:
-                        bomb.setXY((int)x,(int)(y+0.25));
+                        bomb.setXY((int) x, (int) (y + 0.25));
                         bomb.setDraw(true);
                         break;
                 }
 
-        });
+            });
+        }
 
-       Moving(stillObjects);
+        Moving(stillObjects);
+
 
 
     }
@@ -185,6 +205,43 @@ public class Bomber extends Entity {
 
     }
 
+    public void deadbymonster(List <Entity> monster) {
+        if(CheckDead(monster)) {
+            dead = true;
+        }
 
+    }
+
+    public boolean CheckDead(List <Entity> monster) {
+        for (Entity entity : monster)
+        {
+            if( (int)(x+1-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
+                return true;
+            if(  (int)(x-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
+                return true;
+            if( (int)(x+0.25) == (int)entity.x && (int)(y-0.25) == (int)entity.y)
+                return true;
+            if(  (int)(x+0.25) == (int)entity.x && (int)(y+1) == (int)entity.y)
+                return true;
+        }
+        return false;
+    }
+
+    public void AnimationDead(double time, List<Entity> entities) {
+        if(totaldead < 3 * time) {
+            for (int i = 0 ; i < 3 ; i++) {
+                if(totaldead >= i * time) {
+                    this.setImg(player_dead[i]);
+                }
+            }
+        }
+        else {
+            Entity entity = entities.get(0);
+            if(entity instanceof Bomber) {
+                entities.remove(0);
+                BombermanGame.hasWall[(int) entity.y][(int) entity.x] = false;
+            }
+        }
+    }
 
 }

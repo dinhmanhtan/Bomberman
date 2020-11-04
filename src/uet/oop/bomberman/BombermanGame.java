@@ -114,13 +114,13 @@ public class BombermanGame extends Application {
 
                   if (s.get(i).charAt(j) == '#') {
                     Wall  object = new Wall(j, i, Sprite.wall.getFxImage());
-                      stillObjects.add(object);
-                      hasWall[i][j] = true;
+                        stillObjects.add(object);
+                        hasWall[i][j] = true;
                   }
                   else if (s.get(i).charAt(j) == '*') {
                      Brick object = new Brick(j, i, Sprite.brick.getFxImage());
-                      hasWall[i][j] = true;
-                      stillObjects.add(object);
+                        hasWall[i][j] = true;
+                        stillObjects.add(object);
                   }
 
                      Grass grass = new Grass(j, i, Sprite.grass.getFxImage());
@@ -132,10 +132,10 @@ public class BombermanGame extends Application {
 
     public void update() {
        // entities.forEach(Entity::update(scene,0));
-        bomberman.update(scene,deltaTime,stillObjects,bomb);
+        bomberman.update(scene,deltaTime,stillObjects,bomb,monsters,entities);
         balloom.update(deltaTime,stillObjects);
 
-        bomb.update(scene,deltaTime,hasWall,stillObjects);
+        bomb.update(deltaTime,hasWall,stillObjects);
 
 //       for (Entity entity : entities) {
 //           entity.update(scene,deltaTime);

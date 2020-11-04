@@ -1,6 +1,6 @@
 package uet.oop.bomberman.entities;
 
-import javafx.scene.Scene;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.graphics.Sprite;
@@ -159,7 +159,7 @@ public class Bomb extends Entity{
     }
 
 
-    public void update(Scene scene, double time,boolean[][] hasWall,List<Entity> stillObject) {
+    public void update( double time,boolean[][] hasWall,List<Entity> stillObject) {
         Animation(time,hasWall,stillObject);
 
     }

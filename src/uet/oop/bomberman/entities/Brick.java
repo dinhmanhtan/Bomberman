@@ -30,8 +30,7 @@ public class Brick extends Entity {
 
 
 
-   public static void remove(List<Entity> entities , double x ,double y) {
-
+   public static void remove(List<Entity> entities , int x ,int y) {
 
        for(int i=0; i<entities.size(); i++) {
            Entity entity = entities.get(i);

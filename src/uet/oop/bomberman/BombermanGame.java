@@ -25,7 +25,6 @@ public class BombermanGame extends Application {
 
     float prevTime =0.0f;
     float deltaTime = 0.0f;
-    float totalTime = 0.0f;
 
     static public Scene scene;
 
@@ -38,7 +37,7 @@ public class BombermanGame extends Application {
 
     public static Bomber bomberman;
 
-    protected Balloom balloom;
+    public static Balloom balloom;
     protected List<Grass> grassList = new ArrayList<>();
     protected List<Entity> monsters = new ArrayList<>();
 
@@ -115,8 +114,6 @@ public class BombermanGame extends Application {
             for (int j = 0; j < s.get(i).length(); j++) {
 
                 hasWall[i][j] = false;
-
-
                   if (s.get(i).charAt(j) == '#') {
                     Wall  object = new Wall(j, i, Sprite.wall.getFxImage());
                         stillObjects.add(object);

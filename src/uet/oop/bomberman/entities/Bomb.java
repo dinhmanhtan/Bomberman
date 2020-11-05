@@ -125,9 +125,9 @@ public class Bomb extends Entity{
                 // Nếu vị trí player trong khoảng của bom thì có thể đi qua bom ngược lại thì không
 
                 if(Math.abs(Y-y)<1 && ( ( x>=X && x-X < 0.75 ) || ( x<=X  && X-x <1 ) ) )
-                    BombermanGame.bomberman.CheckBomb = false;
+                    BombermanGame.bomberman.CheckBomb = false; // di chuyen dc
                 else
-                    BombermanGame.bomberman.CheckBomb = true;
+                    BombermanGame.bomberman.CheckBomb = true; // ko di chuyen dc
 
 
             } else {
@@ -152,7 +152,9 @@ public class Bomb extends Entity{
 
                  if(CheckPosBomb(BombermanGame.bomberman))
                      BombermanGame.bomberman.setDead(true);
-
+                 if(CheckPosBomb(BombermanGame.balloom)) {
+                     BombermanGame.balloom.setDead(true);
+                 }
 
                 }
                 else  {
@@ -171,8 +173,6 @@ public class Bomb extends Entity{
         if(draw) {
             if ((int) entity.x == (int)x &&  Math.abs((int) entity.y - (int)y) < 1 )
                 return true;
-
-
 
                 if (bomb_horizontal[0].isDraw() && Math.abs(entity.x - bomb_horizontal[0].getX()) < 0.75
                         &&  Math.abs(entity.y - bomb_horizontal[0].getY()) <1 )

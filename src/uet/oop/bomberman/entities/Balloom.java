@@ -12,18 +12,26 @@ public class Balloom extends Entity {
 
 
     private Image[] Balloom;
+    private Image BalloomDead;
+
     public static float totaltime;
     public static float totaltime1;
+    public static float totalDead;
+    private boolean dead;
 
     public Balloom(int x, int y, Image img) {
         super(x, y, img);
         init();
     }
 
+    public void setDead (boolean dead) {
+        this.dead = dead;
+    }
 
     private void init() {
+        draw = true;
         state = State.Left;
-
+        dead = false;
         totaltime = 0.0f;
         totaltime1 = 0.0f;
         Balloom = new Image[6];
@@ -35,6 +43,9 @@ public class Balloom extends Entity {
         Balloom[4] = Sprite.balloom_left2.getFxImage();
         Balloom[5] = Sprite.balloom_left3.getFxImage();
 
+        BalloomDead = Sprite.balloom_dead.getFxImage();
+
+
     }
 
     @Override
@@ -43,22 +54,25 @@ public class Balloom extends Entity {
     }
 
     public void update(double deltaTime, List<Entity> stillObjects) {
-        insertImg(0.5f, deltaTime);
-        move(deltaTime, stillObjects);
+        if(dead){
+            AnimationDead(deltaTime);
+        }
+        else {
+            insertImg(0.5f, deltaTime);
+            move(deltaTime, stillObjects);
+        }
     }
 
 
     private void insertImg(float time, double deltaTime) {
         totaltime += deltaTime;
-
         for (int i = 0; i < 6; i++) {
             if (totaltime >= i * time) {
                 setImg(Balloom[i]);
             }
         }
-
         if (totaltime >= 6 * time) {
-            totaltime = 0.0f;
+                totaltime = 0.0f;
         }
     }
 
@@ -117,6 +131,16 @@ public class Balloom extends Entity {
         return true;
     }
 
+    public void AnimationDead(double deltaTime) {
+        totalDead += deltaTime;
+        if(totalDead <= 0.5) {
+            setImg(BalloomDead);
+        }
+
+        else {
+            draw = false;
+        }
+    }
 
 }
 

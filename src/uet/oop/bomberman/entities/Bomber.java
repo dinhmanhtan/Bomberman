@@ -78,9 +78,8 @@ public class Bomber extends Entity {
      *  Check vị trị chạm tường
      */
     public boolean CheckPos(List<Entity> stillObjects) {
-
         if(CheckBomb) {
-
+            // cham tuong, bomb
             if (state == State.Right && (BombermanGame.hasWall[(int) (y)][(int) (x + 1 - 0.25)] ||
                     BombermanGame.hasWall[(int) (y + 0.5)][(int) (x + 1 - 0.25)]))
                 return true;
@@ -88,6 +87,7 @@ public class Bomber extends Entity {
             if (state == State.Left && (BombermanGame.hasWall[(int) (y)][(int) (x - 0.25)] ||
                     BombermanGame.hasWall[(int) (y + 0.5)][(int) (x - 0.25)]))
                 return true;
+
             if (state == State.Up && BombermanGame.hasWall[(int) (y - 0.25)][(int) (x + 0.25)])
                 return true;
 
@@ -95,18 +95,8 @@ public class Bomber extends Entity {
                 return true;
         }
 
-//        for(Entity entity : stillObjects) {
-////            if(state == State.Right && (int)(x+1-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
-////                return true;
-//            if(state == State.Left && (int)(x-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
-//                return true;
-//            if(state == State.Up && (int)(x+0.25) == (int)entity.x && (int)(y-0.25) == (int)entity.y)
-//                return true;
-//            if(state == State.Down && (int)(x+0.25) == (int)entity.x && (int)(y+1) == (int)entity.y)
-//                return true;
-//             }
 
-       return false;
+       return false; // ko bi cham tuong, bomb
     }
 
 
@@ -172,7 +162,7 @@ public class Bomber extends Entity {
      */
     public void Moving(List<Entity> stillObjects) {
         if(move  && totalTime >= 0.055)   {
-
+            // sang trái
             if(state == State.Left) {
                 if(x > 1  && !CheckPos(stillObjects)) {
 
@@ -184,7 +174,7 @@ public class Bomber extends Entity {
                     x -= 0.25;
                 }
                 setImg(player_left[indexImg[0] % 3]);
-
+            // sang phải
             } else  if(state == State.Right) {
                 if(x < BombermanGame.WIDTH - 2 && !CheckPos(stillObjects) ) {
                     if(y - (int)y == 0.25)
@@ -195,6 +185,7 @@ public class Bomber extends Entity {
                     x += 0.25;
                 }
                 setImg(player_right[indexImg[1] % 3]);
+            // xuống dưới
             } else if(state == State.Down ) {
                 if (y < BombermanGame.HEIGHT - 2 && !CheckPos(stillObjects)) {
 
@@ -206,7 +197,7 @@ public class Bomber extends Entity {
                     y += 0.25;
                 }
                 setImg(player_down[indexImg[3] % 3]);
-
+            // lên trên
             } else if(state == State.Up ) {
                 if(y >= 1  && !CheckPos(stillObjects)) {
 
@@ -236,7 +227,7 @@ public class Bomber extends Entity {
 
     public boolean CheckDeadByMonster(List <Entity> monster) {
 
-        for (Entity entity : monster)
+        for (Entity entity : monster) {
             if ((entity.getState() == State.Down || entity.getState() == State.Up)) {
 
                 if ((x >= entity.x) && (x - entity.x) < 1 && Math.abs(y - entity.y) < 1)
@@ -244,10 +235,11 @@ public class Bomber extends Entity {
 
                 if (entity.x > x && entity.x - x < 0.75 && Math.abs(y - entity.y) < 1)
                     return true;
-            } else if( Math.abs(entity.y - y )< 1 &&  Math.abs(x - entity.x) < 0.75)
-                   return  true;
 
+            } else if (Math.abs(entity.y - y) < 1 && Math.abs(x - entity.x) < 0.75)
+                return true;
 
+        }
 
         return false;
     }

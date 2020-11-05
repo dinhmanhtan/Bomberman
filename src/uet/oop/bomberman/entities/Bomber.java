@@ -45,7 +45,7 @@ public class Bomber extends Entity {
         move =false;
         draw = true;
         CheckBomb = true;
-        number_bomb = 2;
+        number_bomb = 1;
 
         player_right = new Image[3];
         player_left = new Image[3];

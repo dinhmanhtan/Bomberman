@@ -158,6 +158,7 @@ public class Bomb extends Entity{
 
                 }
                 else  {
+                    BombermanGame.bomberman.totalBomb++;
                     BombermanGame.hasWall[(int)y][(int)x] = false;
                     draw = false;
                     Brick.remove(stillObject,(int)x,(int)y);

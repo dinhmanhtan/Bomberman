@@ -39,10 +39,10 @@ public class BombermanGame extends Application {
 
     public static Balloom balloom;
     protected List<Grass> grassList = new ArrayList<>();
-    protected List<Entity> monsters = new ArrayList<>();
+    public static List<Entity> monsters = new ArrayList<>();
 
 
-    protected Bomb bomb;
+    public  List<Bomb> bombs = new ArrayList<>();
 
     public static boolean[][] hasWall;
 
@@ -59,9 +59,11 @@ public class BombermanGame extends Application {
                e.printStackTrace();
         }
 
-        bomb = new Bomb();
+       Bomb bomb = new Bomb();
+       bombs.add(bomb);
 
-        hasWall = new boolean[HEIGHT][WIDTH];   // lưu vị trí các wall,brick
+
+       hasWall = new boolean[HEIGHT][WIDTH];   // lưu vị trí các wall,brick
 
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         entities.add(bomberman);
@@ -134,10 +136,13 @@ public class BombermanGame extends Application {
 
     public void update() {
        // entities.forEach(Entity::update(scene,0));
-        bomberman.update(deltaTime,stillObjects,bomb,monsters);
+        bomberman.update(deltaTime,stillObjects,bombs,monsters);
+
+        if(balloom.isDraw())
         balloom.update(deltaTime,stillObjects);
 
-        bomb.update(deltaTime,stillObjects);
+        for (Bomb bom : bombs)
+          bom.update(deltaTime,stillObjects);
 
 //       for (Entity entity : entities) {
 //           entity.update(scene,deltaTime);
@@ -148,10 +153,13 @@ public class BombermanGame extends Application {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         grassList.forEach(g -> g.render(gc));
         stillObjects.forEach(g -> g.render(gc));
+
+        if(!monsters.isEmpty())
         monsters.forEach(g -> g.render(gc));
 
-        if(bomb.isDraw())
-            bomb.Render(gc);
+        for (Bomb bom : bombs)
+          if(bom.isDraw())
+             bom.Render(gc);
 
         bomberman.render(gc);
 

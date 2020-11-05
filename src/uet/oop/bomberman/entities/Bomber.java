@@ -20,6 +20,7 @@ public class Bomber extends Entity {
     public int[] indexImg;
 
     public boolean CheckBomb;
+    public int number_bomb ;
 
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
@@ -37,12 +38,14 @@ public class Bomber extends Entity {
      *   Khởi tạo các thuộc tính
      */
     public void Init(){
+
         dead = false;
         totalTime =0.0;
         timeDead = 0.0;
         move =false;
         draw = true;
         CheckBomb = true;
+        number_bomb = 2;
 
         player_right = new Image[3];
         player_left = new Image[3];
@@ -101,7 +104,7 @@ public class Bomber extends Entity {
 
 
 
-    public void update(double deltaTime,List<Entity> stillObjects,Bomb bomb,List <Entity> monster) {
+    public void update(double deltaTime,List<Entity> stillObjects,List<Bomb> bombs,List <Entity> monster) {
 
         DeadByMonster(monster);
 
@@ -113,7 +116,7 @@ public class Bomber extends Entity {
             timeDead = 0.0;
             totalTime += deltaTime;
 
-            HandlePressKey(bomb);
+            HandlePressKey(bombs);
         }
 
         Moving(stillObjects);
@@ -121,7 +124,7 @@ public class Bomber extends Entity {
 
     }
 
-    public void HandlePressKey(Bomb bomb) {
+    public void HandlePressKey(List<Bomb> bombs) {
         BombermanGame.scene.setOnKeyPressed(event -> {
 
             switch (event.getCode()) {
@@ -149,9 +152,19 @@ public class Bomber extends Entity {
                     move = true;
                     break;
                 case SPACE:
-                    bomb.setXY((int) x, (int) (y + 0.25));
-                    bomb.setDraw(true);
-                    break;
+
+                    for(int i=0; i<number_bomb; i++) {
+
+                        if( !bombs.get(i).isDraw()) {
+                            if (state == State.Right)
+                                bombs.get(i).setXY((int) (x + 0.25), (int) (y + 0.25));
+                            else
+                                bombs.get(i).setXY((int) x, (int) (y + 0.5));
+
+                            bombs.get(i).setDraw(true);
+                            break;
+                        }
+                    }
             }
 
         });

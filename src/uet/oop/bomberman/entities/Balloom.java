@@ -11,18 +11,25 @@ import java.util.List;
 public class Balloom extends Entity {
 
 
-    private Image[] Balloom;
-    private Image BalloomDead;
+    private Image[] imgBalloom;
+    private Image imgBalloomDead;
 
     public static float totaltime;
     public static float totaltime1;
     public static float totalDead;
     private boolean dead;
+    private boolean isPlaced;      // bom đã được đặt hay chưa
 
     public Balloom(int x, int y, Image img) {
         super(x, y, img);
         init();
     }
+
+    public void setIsPlaced(boolean isPlaced) {
+        this.isPlaced = isPlaced;
+    }
+
+    public boolean IsPlaced() {return isPlaced;}
 
     public void setDead (boolean dead) {
         this.dead = dead;
@@ -34,16 +41,17 @@ public class Balloom extends Entity {
         dead = false;
         totaltime = 0.0f;
         totaltime1 = 0.0f;
-        Balloom = new Image[6];
+        imgBalloom = new Image[6];
 
-        Balloom[0] = Sprite.balloom_right1.getFxImage();
-        Balloom[1] = Sprite.balloom_right2.getFxImage();
-        Balloom[2] = Sprite.balloom_right3.getFxImage();
-        Balloom[3] = Sprite.balloom_left1.getFxImage();
-        Balloom[4] = Sprite.balloom_left2.getFxImage();
-        Balloom[5] = Sprite.balloom_left3.getFxImage();
+        imgBalloom[0] = Sprite.balloom_right1.getFxImage();
+        imgBalloom[1] = Sprite.balloom_right2.getFxImage();
+        imgBalloom[2] = Sprite.balloom_right3.getFxImage();
+        imgBalloom[3] = Sprite.balloom_left1.getFxImage();
+        imgBalloom[4] = Sprite.balloom_left2.getFxImage();
+        imgBalloom[5] = Sprite.balloom_left3.getFxImage();
 
-        BalloomDead = Sprite.balloom_dead.getFxImage();
+
+        imgBalloomDead = Sprite.balloom_dead.getFxImage();
 
 
     }
@@ -68,7 +76,7 @@ public class Balloom extends Entity {
         totaltime += deltaTime;
         for (int i = 0; i < 6; i++) {
             if (totaltime >= i * time) {
-                setImg(Balloom[i]);
+                setImg(imgBalloom[i]);
             }
         }
         if (totaltime >= 6 * time) {
@@ -134,11 +142,14 @@ public class Balloom extends Entity {
     public void AnimationDead(double deltaTime) {
         totalDead += deltaTime;
         if(totalDead <= 0.5) {
-            setImg(BalloomDead);
+            setImg(imgBalloomDead);
         }
 
-        else {
+        else if(totalDead > 0.7) {
             draw = false;
+            totalDead = 0;
+            BombermanGame.monsters.remove(this);
+
         }
     }
 

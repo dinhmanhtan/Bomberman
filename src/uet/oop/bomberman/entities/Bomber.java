@@ -19,10 +19,14 @@ public class Bomber extends Entity {
     public Image[] player_dead;
     public int[] indexImg;
 
+    public boolean CheckBomb;
+
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
         Init();
     }
+
+    public void setDead(boolean dead) {this.dead = dead;}
 
     @Override
     public void update( double time) {
@@ -38,6 +42,7 @@ public class Bomber extends Entity {
         timeDead = 0.0;
         move =false;
         draw = true;
+        CheckBomb = true;
 
         player_right = new Image[3];
         player_left = new Image[3];
@@ -74,70 +79,92 @@ public class Bomber extends Entity {
      */
     public boolean CheckPos(List<Entity> stillObjects) {
 
-        for(Entity entity : stillObjects) {
+        if(CheckBomb) {
 
-            if(state == State.Right && (int)(x+1-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
-               return true;
-            if(state == State.Left && (int)(x-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
-                return true;
-            if(state == State.Up && (int)(x+0.25) == (int)entity.x && (int)(y-0.25) == (int)entity.y)
-                return true;
-            if(state == State.Down && (int)(x+0.25) == (int)entity.x && (int)(y+1) == (int)entity.y)
+            if (state == State.Right && (BombermanGame.hasWall[(int) (y)][(int) (x + 1 - 0.25)] ||
+                    BombermanGame.hasWall[(int) (y + 0.5)][(int) (x + 1 - 0.25)]))
                 return true;
 
+            if (state == State.Left && (BombermanGame.hasWall[(int) (y)][(int) (x - 0.25)] ||
+                    BombermanGame.hasWall[(int) (y + 0.5)][(int) (x - 0.25)]))
+                return true;
+            if (state == State.Up && BombermanGame.hasWall[(int) (y - 0.25)][(int) (x + 0.25)])
+                return true;
+
+            if (state == State.Down && BombermanGame.hasWall[(int) (y + 1)][(int) (x + 0.25)])
+                return true;
         }
+
+//        for(Entity entity : stillObjects) {
+////            if(state == State.Right && (int)(x+1-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
+////                return true;
+//            if(state == State.Left && (int)(x-0.25) == (int)entity.x && Math.abs(y-entity.y) < 0.75)
+//                return true;
+//            if(state == State.Up && (int)(x+0.25) == (int)entity.x && (int)(y-0.25) == (int)entity.y)
+//                return true;
+//            if(state == State.Down && (int)(x+0.25) == (int)entity.x && (int)(y+1) == (int)entity.y)
+//                return true;
+//             }
+
        return false;
     }
 
 
 
     public void update(double deltaTime,List<Entity> stillObjects,Bomb bomb,List <Entity> monster) {
-        deadbymonster(monster);
+
+        DeadByMonster(monster);
+
         if(dead) {
-            timeDead += deltaTime;
-            AnimationDead( 1);
+            AnimationPlayerDead( deltaTime);
         }
+
         else {
+            timeDead = 0.0;
             totalTime += deltaTime;
-            BombermanGame.scene.setOnKeyPressed(event -> {
 
-                switch (event.getCode()) {
-                    case A:
-                        indexImg[0]++;
-                        state = State.Left;
-                        move = true;
-                        break;
-
-                    case D:
-                        indexImg[1]++;
-                        state = State.Right;
-                        move = true;
-                        break;
-
-                    case W:
-                        indexImg[2]++;
-                        state = State.Up;
-                        move = true;
-                        break;
-
-                    case S:
-                        indexImg[3]++;
-                        state = State.Down;
-                        move = true;
-                        break;
-                    case SPACE:
-                        bomb.setXY((int) x, (int) (y + 0.25));
-                        bomb.setDraw(true);
-                        break;
-                }
-
-            });
+            HandlePressKey(bomb);
         }
 
         Moving(stillObjects);
 
 
+    }
 
+    public void HandlePressKey(Bomb bomb) {
+        BombermanGame.scene.setOnKeyPressed(event -> {
+
+            switch (event.getCode()) {
+                case A:
+                    indexImg[0]++;
+                    state = State.Left;
+                    move = true;
+                    break;
+
+                case D:
+                    indexImg[1]++;
+                    state = State.Right;
+                    move = true;
+                    break;
+
+                case W:
+                    indexImg[2]++;
+                    state = State.Up;
+                    move = true;
+                    break;
+
+                case S:
+                    indexImg[3]++;
+                    state = State.Down;
+                    move = true;
+                    break;
+                case SPACE:
+                    bomb.setXY((int) x, (int) (y + 0.25));
+                    bomb.setDraw(true);
+                    break;
+            }
+
+        });
     }
 
     /**
@@ -200,14 +227,14 @@ public class Bomber extends Entity {
 
     }
 
-    public void deadbymonster(List <Entity> monster) {
-        if(CheckDead(monster)) {
+    public void DeadByMonster(List <Entity> monster) {
+        if(CheckDeadByMonster(monster)) {
             dead = true;
         }
 
     }
 
-    public boolean CheckDead(List <Entity> monster) {
+    public boolean CheckDeadByMonster(List <Entity> monster) {
 
         for (Entity entity : monster)
             if ((entity.getState() == State.Down || entity.getState() == State.Up)) {
@@ -225,17 +252,18 @@ public class Bomber extends Entity {
         return false;
     }
 
-    public void AnimationDead(double time) {
-        if(timeDead < 3 * time) {
-            for (int i = 0 ; i < 3 ; i++) {
-                if(timeDead >= i * time) {
-                    this.setImg(player_dead[i]);
-                }
-            }
-        }
-        else draw = false;
+    public void AnimationPlayerDead(double deltaTime) {
 
-        }
+        timeDead += deltaTime;
+        int index = (int)(timeDead*2);
+
+        if(index < 3)
+            this.setImg(player_dead[index%3]);
+
+        else
+            draw = false;
+
+    }
 
 
 }

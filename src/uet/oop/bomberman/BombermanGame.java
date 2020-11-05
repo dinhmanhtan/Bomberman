@@ -36,7 +36,8 @@ public class BombermanGame extends Application {
     protected List<Entity> entities = new ArrayList<>();
     protected List<Entity> stillObjects = new ArrayList<>();
 
-    protected Bomber bomberman;
+    public static Bomber bomberman;
+
     protected Balloom balloom;
     protected List<Grass> grassList = new ArrayList<>();
     protected List<Entity> monsters = new ArrayList<>();
@@ -65,7 +66,7 @@ public class BombermanGame extends Application {
 
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         entities.add(bomberman);
-        balloom = new Balloom(2, 5, Sprite.balloom_right1.getFxImage());
+        balloom = new Balloom(4, 5, Sprite.balloom_right1.getFxImage());
         monsters.add(balloom);
    }
 
@@ -154,8 +155,8 @@ public class BombermanGame extends Application {
 
         if(bomb.isDraw())
             bomb.Render(gc);
-        if(bomberman.isDraw())
-           bomberman.render(gc);
+
+        bomberman.render(gc);
 
     }
 

@@ -3,6 +3,7 @@ package uet.oop.bomberman.entities;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class Balloom extends Entity {
 
 
     private void init() {
-        state = State.Right;
+        state = State.Left;
 
         totaltime = 0.0f;
         totaltime1 = 0.0f;
@@ -71,28 +72,28 @@ public class Balloom extends Entity {
 
     private void moving(List<Entity> stillObjects) {
         if(state == State.Up) {
-            if(!check(stillObjects)) {
+            if(!checkPosWall(stillObjects)) {
                 state = State.Down;
             }
             y-= 0.25;
         }
 
         if(state == State.Down) {
-            if(!check(stillObjects)) {
+            if(!checkPosWall(stillObjects)) {
                 state = State.Up;
             }
             y += 0.25;
         }
 
         if(state == State.Right) {
-            if(!check(stillObjects)) {
+            if(!checkPosWall(stillObjects)) {
                 state = State.Left;
             }
             x += 0.25;
         }
 
         if(state == State.Left) {
-            if(!check(stillObjects)) {
+            if(!checkPosWall(stillObjects)) {
                 state = State.Right;
             }
             x -= 0.25;
@@ -100,20 +101,19 @@ public class Balloom extends Entity {
 
     }
 
-    boolean check(List<Entity> stillObjects) {
-        for (Entity entity : stillObjects) {
+    boolean checkPosWall(List<Entity> stillObjects) {
 
+        if(state == State.Right &&  BombermanGame.hasWall[(int)(y)][(int)(x+1)])
+            return false;
 
-            if(state == State.Right && (int)(x+1) == (int)entity.x && (int)y == (int)entity.y)
-                return false;
-            if(state == State.Left && (int)(x-0.5) == (int)entity.x && (int)y == (int)entity.y)
-                return false;
+        if(state == State.Left &&  BombermanGame.hasWall[(int)(y)][(int)(x-0.5)] )
+            return false;
+        if(state == State.Up && BombermanGame.hasWall[(int)(y-0.25)][(int)x] )
+            return false;
 
-            if (state == State.Up && (int) (x ) == (int) entity.x && (int) (y - 0.25) == (int) entity.y)
-                return false;
-            if (state == State.Down && (int) (x ) == (int) entity.x && (int) (y + 1.25) == (int) entity.y)
-                return false;
-            }
+        if(state == State.Down && BombermanGame.hasWall[(int)(y+1.25)][(int)(x)])
+            return false;
+
         return true;
     }
 

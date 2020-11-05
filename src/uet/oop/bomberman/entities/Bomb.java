@@ -115,6 +115,21 @@ public class Bomb extends Entity{
                     bomb_vertical[k].setDraw(false);
                 }
 
+                // Thêm vị trí bom vào hasWall
+
+                BombermanGame.hasWall[(int)y][(int)x] = true;
+
+                double X = BombermanGame.bomberman.getX();
+                double Y = BombermanGame.bomberman.getY();
+
+                // Nếu vị trí player trong khoảng của bom thì có thể đi qua bom ngược lại thì không
+
+                if(Math.abs(Y-y)<1 && ( ( x>=X && x-X < 0.75 ) || ( x<=X  && X-x <1 ) ) )
+                    BombermanGame.bomberman.CheckBomb = false;
+                else
+                    BombermanGame.bomberman.CheckBomb = true;
+
+
             } else {
                 int j = (int) (timeBomb * 4.5);
 
@@ -134,8 +149,14 @@ public class Bomb extends Entity{
                     bomb_vertical[k].setDraw(!BombermanGame.hasWall[(int)bomb_vertical[k].getY()][(int) bomb_vertical[k].getX()]);
 
                     }
+
+                 if(CheckPosBomb(BombermanGame.bomberman))
+                     BombermanGame.bomberman.setDead(true);
+
+
                 }
                 else  {
+                    BombermanGame.hasWall[(int)y][(int)x] = false;
                     draw = false;
                     Brick.remove(stillObject,(int)x,(int)y);
                 }
@@ -144,6 +165,40 @@ public class Bomb extends Entity{
         } else timeBomb = 0.0;
     }
 
+    // Check vị trị có thể bị chết so với bom
+    boolean CheckPosBomb(Entity entity) {
+
+        if(draw) {
+            if ((int) entity.x == (int)x &&  Math.abs((int) entity.y - (int)y) < 1 )
+                return true;
+
+
+
+                if (bomb_horizontal[0].isDraw() && Math.abs(entity.x - bomb_horizontal[0].getX()) < 0.75
+                        &&  Math.abs(entity.y - bomb_horizontal[0].getY()) <1 )
+                    return true;
+                if (bomb_horizontal[1].isDraw() && Math.abs(entity.x - bomb_horizontal[1].getX()) < 1
+                    &&  Math.abs(entity.y - bomb_horizontal[1].getY()) <1 )
+                return true;
+
+                if (bomb_vertical[1].isDraw() && ((entity.x >= bomb_vertical[1].getX() && (entity.x - bomb_vertical[1].getX()) < 1 )
+                      || (entity.x <= bomb_vertical[1].getX() && bomb_vertical[1].getX()-entity.x <0.75)  )
+                        &&  Math.abs(entity.y - bomb_vertical[1].getY()) <1 )
+
+                    return true;
+
+                if (bomb_vertical[0].isDraw() && ((entity.x >= bomb_vertical[0].getX() && (entity.x - bomb_vertical[0].getX()) < 1 )
+                    || (entity.x <= bomb_vertical[1].getX() && bomb_vertical[0].getX()-entity.x <0.75)   )
+                    &&  Math.abs(entity.y - bomb_vertical[0].getY()) <1 )
+                   return true;
+
+
+        }
+
+        return false;
+    }
+
+
 
     public void Render(GraphicsContext gc) {
 
@@ -151,11 +206,8 @@ public class Bomb extends Entity{
 
         for(int i=0; i<2; i++) {
 
-            if(bomb_horizontal[i].isDraw())
-                bomb_horizontal[i].render(gc);
-
-            if(bomb_vertical[i].isDraw())
-                bomb_vertical[i].render(gc);
+            bomb_horizontal[i].render(gc);
+            bomb_vertical[i].render(gc);
         }
     }
 

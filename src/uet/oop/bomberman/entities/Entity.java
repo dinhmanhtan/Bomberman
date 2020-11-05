@@ -13,7 +13,7 @@ public  class Entity {
     protected double y;
     protected Image img;
 
-    protected boolean draw;
+    protected boolean draw = true;
 
     enum  State {Up, Down, Right, Left}
     protected State state;
@@ -82,6 +82,7 @@ public  class Entity {
 //        ImageView iv = new ImageView(img);
 //        Image base = iv.snapshot(params, null);
 
+        if(isDraw())
         gc.drawImage(img, x * Sprite.SCALED_SIZE, y * Sprite.SCALED_SIZE);
 
     }

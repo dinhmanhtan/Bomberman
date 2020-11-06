@@ -1,8 +1,6 @@
 package uet.oop.bomberman.entities;
 
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Stage;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -10,7 +8,7 @@ import java.util.List;
 
 public class Balloom extends Entity {
 
-
+    private Image[] mob_dead;
     private Image[] imgBalloom;
     private Image imgBalloomDead;
 
@@ -42,6 +40,7 @@ public class Balloom extends Entity {
         totaltime = 0.0f;
         totaltime1 = 0.0f;
         imgBalloom = new Image[6];
+        mob_dead = new Image[3];
 
         imgBalloom[0] = Sprite.balloom_right1.getFxImage();
         imgBalloom[1] = Sprite.balloom_right2.getFxImage();
@@ -50,6 +49,9 @@ public class Balloom extends Entity {
         imgBalloom[4] = Sprite.balloom_left2.getFxImage();
         imgBalloom[5] = Sprite.balloom_left3.getFxImage();
 
+        mob_dead[0] = Sprite.mob_dead1.getFxImage();
+        mob_dead[1] = Sprite.mob_dead2.getFxImage();
+        mob_dead[2] = Sprite.mob_dead3.getFxImage();
 
         imgBalloomDead = Sprite.balloom_dead.getFxImage();
 
@@ -141,11 +143,16 @@ public class Balloom extends Entity {
 
     public void AnimationDead(double deltaTime) {
         totalDead += deltaTime;
-        if(totalDead <= 0.5) {
+        if(totalDead <= 0.4) {
             setImg(imgBalloomDead);
         }
-
-        else if(totalDead > 0.7) {
+        if (totalDead <= 0.7) {
+            for (int i = 0 ; i < 3 ; i++) {
+                if(totalDead >= 0.4 + i*0.1) {
+                    setImg(mob_dead[i]);
+                }
+            }
+        } else if (totalDead > 0.7) {
             draw = false;
             totalDead = 0;
             BombermanGame.monsters.remove(this);

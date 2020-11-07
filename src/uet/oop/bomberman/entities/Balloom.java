@@ -82,7 +82,7 @@ public class Balloom extends Entity {
             }
         }
         if (totaltime >= 6 * time) {
-                totaltime = 0.0f;
+            totaltime = 0.0f;
         }
     }
 
@@ -127,15 +127,15 @@ public class Balloom extends Entity {
 
     boolean checkPosWall(List<Entity> stillObjects) {
 
-        if(state == State.Right &&  BombermanGame.hasWall[(int)(y)][(int)(x+1)])
+        if(state == State.Right &&  BombermanGame.hasWallMonster[(int)(y)][(int)(x+1)])
             return false;
 
-        if(state == State.Left &&  BombermanGame.hasWall[(int)(y)][(int)(x-0.5)] )
+        if(state == State.Left &&  BombermanGame.hasWallMonster[(int)(y)][(int)(x-0.5)] )
             return false;
-        if(state == State.Up && BombermanGame.hasWall[(int)(y-0.25)][(int)x] )
+        if(state == State.Up && BombermanGame.hasWallMonster[(int)(y-0.25)][(int)x] )
             return false;
 
-        if(state == State.Down && BombermanGame.hasWall[(int)(y+1.25)][(int)(x)])
+        if(state == State.Down && BombermanGame.hasWallMonster[(int)(y+1.25)][(int)(x)])
             return false;
 
         return true;
@@ -161,4 +161,3 @@ public class Balloom extends Entity {
     }
 
 }
-

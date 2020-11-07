@@ -22,8 +22,10 @@ public class Bomber extends Entity {
     public Image[] player_dead;
     public int[] indexImg;
 
-    public boolean CheckBomb;
+
     public int number_bomb ;
+
+    private double speed;
 
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
@@ -31,6 +33,7 @@ public class Bomber extends Entity {
     }
 
     public void setDead(boolean dead) {this.dead = dead;}
+    public void setSpeed(double speed) {this.speed = speed;}
 
     @Override
     public void update( double time) {
@@ -47,8 +50,10 @@ public class Bomber extends Entity {
         timeDead = 0.0;
         move =false;
         draw = true;
-        CheckBomb = true;
         number_bomb = 1;
+
+
+        speed = 0.1;
 
         player_right = new Image[3];
         player_left = new Image[3];
@@ -84,25 +89,25 @@ public class Bomber extends Entity {
      *  Check vị trị chạm tường
      */
     public boolean CheckPos(List<Entity> stillObjects) {
-        if(CheckBomb) {
-            // cham tuong, bomb
-            if (state == State.Right && (BombermanGame.hasWall[(int) (y)][(int) (x + 1 - 0.25)] ||
-                    BombermanGame.hasWall[(int) (y + 0.5)][(int) (x + 1 - 0.25)]))
+
+
+            if (state == State.Right && (BombermanGame.hasWallPlayer[(int) (y)][(int) (x + 1 - 0.25)] ||
+                    BombermanGame.hasWallPlayer[(int) (y + 0.5)][(int) (x + 1 - 0.25)]))
                 return true;
 
-            if (state == State.Left && (BombermanGame.hasWall[(int) (y)][(int) (x - 0.25)] ||
-                    BombermanGame.hasWall[(int) (y + 0.5)][(int) (x - 0.25)]))
+            if (state == State.Left && (BombermanGame.hasWallPlayer[(int) (y)][(int) (x - 0.25)] ||
+                    BombermanGame.hasWallPlayer[(int) (y + 0.5)][(int) (x - 0.25)]))
                 return true;
 
-            if (state == State.Up && BombermanGame.hasWall[(int) (y - 0.25)][(int) (x + 0.25)])
+            if (state == State.Up && BombermanGame.hasWallPlayer[(int) (y - 0.25)][(int) (x + 0.25)])
                 return true;
 
-            if (state == State.Down && BombermanGame.hasWall[(int) (y + 1)][(int) (x + 0.25)])
+            if (state == State.Down && BombermanGame.hasWallPlayer[(int) (y + 1)][(int) (x + 0.25)])
                 return true;
-        }
 
 
-       return false; // ko bi cham tuong, bomb
+
+        return false; // ko bi cham tuong, bomb
     }
 
 
@@ -119,7 +124,7 @@ public class Bomber extends Entity {
             timeDead = 0.0;
             totalTime += deltaTime;
 
-            HandlePressKey(bombs);
+            HandlePressKey(bombs,deltaTime);
         }
 
         Moving(stillObjects);
@@ -127,33 +132,50 @@ public class Bomber extends Entity {
 
     }
 
-    public void HandlePressKey(List<Bomb> bombs) {
+    public void HandlePressKey(List<Bomb> bombs,double deltaTime) {
         // sự kiện nhả phím ra
-        BombermanGame.scene.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            move = false;
+        BombermanGame.scene.setOnKeyReleased(event -> {
+
+
+            if(move ) {
+                if (event.getCode() == KeyCode.A || event.getCode() == KeyCode.D
+                        || event.getCode() == KeyCode.W || event.getCode() == KeyCode.S) {
+
+                    move = false;
+
+                }
+            }
         });
 
         BombermanGame.scene.setOnKeyPressed(event -> {
             if(event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.A) {
                 state = State.Left;
                 move = true;
+
             }
             else if(event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.D) {
                 state = State.Right;
                 move = true;
+
             }
             else if(event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.W) {
                 state = State.Up;
                 move = true;
+
             }
             else if(event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.S) {
                 state = State.Down;
                 move = true;
+
             }
-            else if(event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.SPACE) {
+             if(event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.SPACE) {
+
+                 int index = 0;
                 for(int i=0; i<number_bomb; i++) {
 
-                    if( !bombs.get(i).isDraw()) {
+                    if( !bombs.get(i).isDraw() && index < 1) {
+                        index ++;
+
                         if (state == State.Right)
                             bombs.get(i).setXY((int) (x + 0.25), (int) (y + 0.25));
                         else
@@ -163,9 +185,7 @@ public class Bomber extends Entity {
                     }
                 }
             }
-            else if(event.getEventType() == KeyEvent.KEY_PRESSED) {
-                move = false;
-            }
+
         });
 
 
@@ -175,7 +195,8 @@ public class Bomber extends Entity {
      *  Hàm di chuyển
      */
     public void Moving(List<Entity> stillObjects) {
-        if(move  && totalTime >= 0.055)   {
+        if(move  && totalTime >= speed)   {
+
             // sang trái
             if(state == State.Left) {
                 if(x > 1  && !CheckPos(stillObjects)) {
@@ -189,7 +210,7 @@ public class Bomber extends Entity {
                 }
                 indexImg[0]++;
                 setImg(player_left[indexImg[0] % 3]);
-            // sang phải
+                // sang phải
             } else  if(state == State.Right) {
                 if(x < BombermanGame.WIDTH - 2 && !CheckPos(stillObjects) ) {
                     if(y - (int)y == 0.25)
@@ -201,7 +222,7 @@ public class Bomber extends Entity {
                 }
                 indexImg[1]++;
                 setImg(player_right[indexImg[1] % 3]);
-            // xuống dưới
+                // xuống dưới
             } else if(state == State.Down ) {
                 if (y < BombermanGame.HEIGHT - 2 && !CheckPos(stillObjects)) {
 
@@ -214,7 +235,7 @@ public class Bomber extends Entity {
                 }
                 indexImg[3]++;
                 setImg(player_down[indexImg[3] % 3]);
-            // lên trên
+                // lên trên
             } else if(state == State.Up ) {
                 if(y >= 1  && !CheckPos(stillObjects)) {
 
@@ -229,7 +250,7 @@ public class Bomber extends Entity {
                 indexImg[2]++;
                 setImg(player_up[indexImg[2] % 3]);
             }
-            System.out.println(  x + "   " + y);
+           // System.out.println(  x + "   " + y);
             totalTime = 0.0f;
             //move = false;
         }

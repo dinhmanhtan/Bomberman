@@ -43,8 +43,10 @@ public class BombermanGame extends Application {
 
 
     public  List<Bomb> bombs = new ArrayList<>();
+    public  Item item;
 
-    public static boolean[][] hasWall;
+    public static boolean[][] hasWallPlayer;  // dành cho player
+    public static boolean[][] hasWallMonster;  // dành cho quái
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
@@ -59,11 +61,20 @@ public class BombermanGame extends Application {
                e.printStackTrace();
         }
 
-       Bomb bomb = new Bomb();
-       bombs.add(bomb);
+        Bomb bomb = new Bomb();
+        bombs.add(bomb);
+
+//        Bomb bomb1 = new Bomb();
+//        bombs.add(bomb1);
+//
+//        Bomb bomb2 = new Bomb();
+//        bombs.add(bomb2);
+
+        item = new Item();
+        hasWallPlayer = new boolean[HEIGHT][WIDTH];   // lưu vị trí các wall,brick
+        hasWallMonster = new boolean[HEIGHT][WIDTH];
 
 
-       hasWall = new boolean[HEIGHT][WIDTH];   // lưu vị trí các wall,brick
 
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         entities.add(bomberman);
@@ -89,6 +100,10 @@ public class BombermanGame extends Application {
         stage.show();
 
         Init();
+        createMap();
+        item.setPosition(stillObjects);
+
+
        new AnimationTimer()  {
             @Override
             public void handle(long now) {
@@ -106,7 +121,7 @@ public class BombermanGame extends Application {
         }.start();
 
 
-        createMap();
+
 
 
     }
@@ -115,16 +130,21 @@ public class BombermanGame extends Application {
         for (int i = 0; i < s.size(); i++) {
             for (int j = 0; j < s.get(i).length(); j++) {
 
-                hasWall[i][j] = false;
+                hasWallPlayer[i][j] = false;
+                hasWallMonster[i][j] = false;
+
                   if (s.get(i).charAt(j) == '#') {
+
                     Wall  object = new Wall(j, i, Sprite.wall.getFxImage());
                         stillObjects.add(object);
-                        hasWall[i][j] = true;
+                        hasWallPlayer[i][j] = true;
+                        hasWallMonster[i][j] = true;
                   }
                   else if (s.get(i).charAt(j) == '*') {
                      Brick object = new Brick(j, i, Sprite.brick.getFxImage());
-                        hasWall[i][j] = true;
-                        stillObjects.add(object);
+                      hasWallPlayer[i][j] = true;
+                      hasWallMonster[i][j] = true;
+                      stillObjects.add(object);
                   }
 
                      Grass grass = new Grass(j, i, Sprite.grass.getFxImage());
@@ -141,6 +161,8 @@ public class BombermanGame extends Application {
         if(balloom.isDraw())
         balloom.update(deltaTime,stillObjects);
 
+        item.update(bombs);
+
         for (Bomb bom : bombs)
           bom.update(deltaTime,stillObjects);
 
@@ -152,6 +174,7 @@ public class BombermanGame extends Application {
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         grassList.forEach(g -> g.render(gc));
+        item.render(gc);
         stillObjects.forEach(g -> g.render(gc));
 
         if(!monsters.isEmpty())

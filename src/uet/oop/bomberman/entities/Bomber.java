@@ -250,7 +250,7 @@ public class Bomber extends Entity {
                 indexImg[2]++;
                 setImg(player_up[indexImg[2] % 3]);
             }
-           // System.out.println(  x + "   " + y);
+            System.out.println(  x + "   " + y);
             totalTime = 0.0f;
             //move = false;
         }

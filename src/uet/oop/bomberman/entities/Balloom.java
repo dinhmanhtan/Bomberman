@@ -4,17 +4,21 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Random;
 
 public class Balloom extends Entity {
 
     private Image[] mob_dead;
     private Image[] imgBalloom;
     private Image imgBalloomDead;
+    private int rd;
+    private final Random random = new Random();
 
-    public static float totaltime;
-    public static float totaltime1;
-    public static float totalDead;
+    private float totaltime;
+    private float totaltime1;
+    private float totalDead;
     private boolean dead;
     private boolean isPlaced;      // bom đã được đặt hay chưa
 
@@ -68,7 +72,8 @@ public class Balloom extends Entity {
             AnimationDead(deltaTime);
         }
         else {
-            insertImg(0.5f, deltaTime);
+            insertImg(0.3f, deltaTime);
+            Animation();
             move(deltaTime, stillObjects);
         }
     }
@@ -88,55 +93,142 @@ public class Balloom extends Entity {
 
     private void move(double deltaTime,List<Entity> stillObjects ) {
         totaltime1 += deltaTime;
-        if (totaltime1 >= 0.15) {
+        if (totaltime1 >= 0.1) {
             moving(stillObjects);
             totaltime1 = 0.0f;
         }
     }
 
     private void moving(List<Entity> stillObjects) {
+
+        CheckMove(stillObjects);
+
         if(state == State.Up) {
-            if(!checkPosWall(stillObjects)) {
-                state = State.Down;
-            }
-            y-= 0.25;
+                y -= 0.25;
         }
-
         if(state == State.Down) {
-            if(!checkPosWall(stillObjects)) {
-                state = State.Up;
-            }
-            y += 0.25;
-        }
 
+                y += 0.25;
+        }
         if(state == State.Right) {
-            if(!checkPosWall(stillObjects)) {
-                state = State.Left;
-            }
-            x += 0.25;
+                x += 0.25;
+        }
+        if(state == State.Left) {
+                x -= 0.25;
         }
 
-        if(state == State.Left) {
-            if(!checkPosWall(stillObjects)) {
-                state = State.Right;
+        System.out.println(state);
+        System.out.println(x +" " + y);
+    }
+    // 0, 1, 2 phai
+    // 3, 4, 5 trai
+
+    public void CheckMove(List<Entity> stillObjects) {
+        while (true) {
+            if(state == State.Up) {
+                if(!checkPosWall(stillObjects)) {
+                    state = State.Left;
+                }
             }
-            x -= 0.25;
+
+            if(state == State.Down) {
+                if(!checkPosWall(stillObjects)) {
+                    state = State.Right;
+                }
+            }
+
+            if(state == State.Right) {
+                if(!checkPosWall(stillObjects)) {
+                    state = State.Up;
+                }
+            }
+
+            if(state == State.Left) {
+                if(!checkPosWall(stillObjects)) {
+                    state = State.Down;
+                }
+            }
+
+            if(checkPosWall(stillObjects)) break;
+        }
+    }
+
+    public void Radom () {
+        if (rd == 0) {
+            state = State.Down;
+        }
+        if (rd == 1) {
+            state = State.Right;
+        }
+        if(rd == 2) {
+            state = State.Up;
+        }
+        if(rd == 3) {
+            state = State.Left;
+        }
+    }
+
+    public void Animation() {
+        if (Check()) {
+
+            if ((img == imgBalloom[0])) {
+
+                rd = random.nextInt(2);
+
+            } else if ((img == imgBalloom[3])) {
+
+                rd = random.nextInt(2) + 2;
+
+            }
+            Radom();
         }
 
     }
 
-    boolean checkPosWall(List<Entity> stillObjects) {
+    public boolean Check () {
 
-        if(state == State.Right &&  BombermanGame.hasWallMonster[(int)(y)][(int)(x+1)])
-            return false;
+        if( x  - (int) x == 0 && y - (int) y== 0 ) {
+            if(state == State.Right) {
+                if (!BombermanGame.hasWallMonster[(int) y + 1][(int) x]) {
+                    return true;
+                }
+            }
 
-        if(state == State.Left &&  BombermanGame.hasWallMonster[(int)(y)][(int)(x-0.5)] )
-            return false;
-        if(state == State.Up && BombermanGame.hasWallMonster[(int)(y-0.25)][(int)x] )
-            return false;
+            if(state == State.Left) {
+                if (!BombermanGame.hasWallMonster[(int) y - 1][(int) x]) {
+                    return true;
+                }
+            }
 
-        if(state == State.Down && BombermanGame.hasWallMonster[(int)(y+1.25)][(int)(x)])
-            return false;
+            if(state == State.Up) {
+                if (!BombermanGame.hasWallMonster[(int) (y)][(int) x - 1]) {
+                    return true;
+                }
+            }
+
+            if (state == State.Down) {
+                if (!BombermanGame.hasWallMonster[(int) y][(int) x + 1]) {
+                    return true;
+                }
+            }
+        }
+        // Check trai
+        return false;
+    }
+
+    public boolean checkPosWall(List<Entity> stillObjects) {
+
+            if (state == State.Right && BombermanGame.hasWallMonster[(int) (y)][(int) (x + 1)])
+                return false;
+
+            if (state == State.Left && BombermanGame.hasWallMonster[(int) (y)][(int) (x - 0.25)])
+                return false;
+
+            if (state == State.Up && BombermanGame.hasWallMonster[(int) (y - 0.25)][(int) x])
+                return false;
+
+            if (state == State.Down && BombermanGame.hasWallMonster[(int) (y + 1)][(int) (x)])
+                return false;
 
         return true;
     }

@@ -4,9 +4,13 @@ package uet.oop.bomberman.entities;
 import javafx.beans.property.StringProperty;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.PlayMusic;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.io.File;
 import java.util.List;
 
 public class Bomb extends Entity{
@@ -25,6 +29,7 @@ public class Bomb extends Entity{
 
     protected Entity[] bomb_horizontal;
     protected Entity[] bomb_vertical;
+    public MediaPlayer mediaPlayer;
 
     public  int xMax,xMin,yMax,yMin;   // lưu tọa độ bom nổ đầu và cuối
 
@@ -135,7 +140,7 @@ public class Bomb extends Entity{
             } else if(X > 1) {
                 bomb_horizontal[0].setXY(x-2,y);
                 bomb_horizontal[2].setXY(x-1,y);
-                xMin = 100;
+                xMin = X;
             }
 
             // Phải
@@ -147,7 +152,7 @@ public class Bomb extends Entity{
                 bomb_horizontal[1].setXY(x+1,y);
                 xMax = X +2;
             } else  {
-                xMax = 100;
+                xMax = X;
                 bomb_horizontal[1].setXY(x+2,y);
                 bomb_horizontal[3].setXY(x+1,y);
             }
@@ -262,14 +267,14 @@ public class Bomb extends Entity{
                  //
 
                     if(CheckPosBomb(BombermanGame.bomberman))
-                     BombermanGame.bomberman.setDead(true);
+                         BombermanGame.bomberman.setDead(true);
                     if(CheckPosBomb(BombermanGame.balloom)) {
-                     BombermanGame.balloom.setDead(true);
+                         BombermanGame.balloom.setDead(true);
                     }
 
                 }
                 else  {
-
+                    playMusic(PlayMusic.explosion_sound);
                     Brick.remove(stillObject,(int)x,(int)y,xMin,yMin,xMax,yMax);
 
                     BombermanGame.hasWallPlayer[(int)y][(int)x] = false;
@@ -335,6 +340,14 @@ public class Bomb extends Entity{
 
     public void update( double time,List<Entity> stillObject) {
         Animation(time,stillObject);
+
+    }
+
+    public  void playMusic(String path) {
+
+            Media media = new Media(new File(path).toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.play();
 
     }
 }

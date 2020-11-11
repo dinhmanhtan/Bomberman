@@ -2,13 +2,18 @@ package uet.oop.bomberman.entities;
 
 
 import javafx.event.EventType;
+import javafx.scene.Camera;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.PlayMusic;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.io.File;
 import java.util.List;
 
 public class Bomber extends Entity {
@@ -21,11 +26,15 @@ public class Bomber extends Entity {
     public Image[] player_right, player_left,player_down, player_up;
     public Image[] player_dead;
     public int[] indexImg;
-
+    public  int indexSoundStep ;
+    public boolean musicDead ;
 
     public int number_bomb ;
 
     private double speed;
+    public  MediaPlayer mediaPlayer;
+    public int num_plays = 3;
+
 
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
@@ -34,16 +43,14 @@ public class Bomber extends Entity {
 
     public void setDead(boolean dead) {this.dead = dead;}
     public void setSpeed(double speed) {this.speed = speed;}
-
-    @Override
-    public void update( double time) {
-
-    }
+    public  boolean getDeath() {return this.dead;}
 
     /**
      *   Khởi tạo các thuộc tính
      */
     public void Init(){
+
+        x = y = 1;
 
         dead = false;
         totalTime =0.0;
@@ -51,7 +58,8 @@ public class Bomber extends Entity {
         move =false;
         draw = true;
         number_bomb = 1;
-
+        indexSoundStep = 0;
+        musicDead  = true;
 
         speed = 0.1;
 
@@ -83,6 +91,22 @@ public class Bomber extends Entity {
 
         indexImg = new int[4];
         indexImg[0] = indexImg[1] = indexImg[2] = indexImg[3] = 0;
+    }
+
+    public void Reset() {
+        x = y = 1;
+
+        dead = false;
+        totalTime =0.0;
+        timeDead = 0.0;
+        move =false;
+        draw = true;
+        number_bomb = 1;
+        indexSoundStep = 0;
+        musicDead  = true;
+
+        speed = 0.1;
+        img = player_right[0];
     }
 
     /**
@@ -117,7 +141,11 @@ public class Bomber extends Entity {
         DeadByMonster(monster);
 
         if(dead) {
+
+           playMusic(PlayMusic.death_sound,musicDead);
+            musicDead = false;
             AnimationPlayerDead( deltaTime);
+
         }
 
         else {
@@ -132,7 +160,7 @@ public class Bomber extends Entity {
 
     }
 
-    public void HandlePressKey(List<Bomb> bombs,double deltaTime) {
+    public void HandlePressKey(List<Bomb> bombs, double deltaTime) {
         // sự kiện nhả phím ra
         BombermanGame.scene.setOnKeyReleased(event -> {
 
@@ -151,6 +179,8 @@ public class Bomber extends Entity {
             if(event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.A) {
                 state = State.Left;
                 move = true;
+
+
 
             }
             else if(event.getEventType() == KeyEvent.KEY_PRESSED && event.getCode() == KeyCode.D) {
@@ -182,6 +212,7 @@ public class Bomber extends Entity {
                             bombs.get(i).setXY((int) x, (int) (y + 0.5));
 
                         bombs.get(i).setDraw(true);
+                        playMusic(PlayMusic.put_bomb_sound,true);
                     }
                 }
             }
@@ -196,7 +227,7 @@ public class Bomber extends Entity {
      */
     public void Moving(List<Entity> stillObjects) {
         if(move  && totalTime >= speed)   {
-
+          indexSoundStep ++;
             // sang trái
             if(state == State.Left) {
                 if(x > 1  && !CheckPos(stillObjects)) {
@@ -207,9 +238,14 @@ public class Bomber extends Entity {
                         y = (int) y + 1;
 
                     x -= 0.25;
+
                 }
                 indexImg[0]++;
                 setImg(player_left[indexImg[0] % 3]);
+
+                if(indexSoundStep % 3 ==0)
+                   playMusic(PlayMusic.step_horizontal_sound,true);
+
                 // sang phải
             } else  if(state == State.Right) {
                 if(x < BombermanGame.WIDTH - 2 && !CheckPos(stillObjects) ) {
@@ -219,9 +255,15 @@ public class Bomber extends Entity {
                         y = (int) y + 1;
 
                     x += 0.25;
+
+
                 }
                 indexImg[1]++;
                 setImg(player_right[indexImg[1] % 3]);
+
+                if(indexSoundStep % 3 ==0)
+                  playMusic(PlayMusic.step_horizontal_sound,true);
+
                 // xuống dưới
             } else if(state == State.Down ) {
                 if (y < BombermanGame.HEIGHT - 2 && !CheckPos(stillObjects)) {
@@ -232,9 +274,14 @@ public class Bomber extends Entity {
                         x = (int) x + 1;
 
                     y += 0.25;
+
                 }
                 indexImg[3]++;
                 setImg(player_down[indexImg[3] % 3]);
+
+                if(indexSoundStep % 3 ==0)
+                    playMusic(PlayMusic.step_vertical_sound,true);
+
                 // lên trên
             } else if(state == State.Up ) {
                 if(y >= 1  && !CheckPos(stillObjects)) {
@@ -246,9 +293,13 @@ public class Bomber extends Entity {
 
 
                     y -= 0.25;
+
                 }
                 indexImg[2]++;
                 setImg(player_up[indexImg[2] % 3]);
+
+                if(indexSoundStep % 3 ==0)
+                   playMusic(PlayMusic.step_vertical_sound,true);
             }
             System.out.println(  x + "   " + y);
             totalTime = 0.0f;
@@ -259,6 +310,7 @@ public class Bomber extends Entity {
 
     public void DeadByMonster(List <Entity> monster) {
         if(CheckDeadByMonster(monster)) {
+
             dead = true;
         }
 
@@ -288,13 +340,31 @@ public class Bomber extends Entity {
         timeDead += deltaTime;
         int index = (int)(timeDead*2);
 
-        if(index < 3)
-            this.setImg(player_dead[index%3]);
 
-        else
+
+        if(index < 3) {
+
+            if(index == 1)
+
+            this.setImg(player_dead[index % 3]);
+
+        }else {
+
             draw = false;
+            BombermanGame.GameOver = true;
+            BombermanGame.mediaPlayer.stop();
+            playMusic(PlayMusic.life_lost_music,true);
+        }
 
     }
 
+    public  void playMusic(String path, boolean isPlay) {
+
+        if(isPlay) {
+            Media media = new Media(new File(path).toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.play();
+        }
+    }
 
 }

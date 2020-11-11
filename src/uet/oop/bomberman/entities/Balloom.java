@@ -20,18 +20,11 @@ public class Balloom extends Entity {
     private float totaltime1;
     private float totalDead;
     private boolean dead;
-    private boolean isPlaced;      // bom đã được đặt hay chưa
 
     public Balloom(int x, int y, Image img) {
         super(x, y, img);
         init();
     }
-
-    public void setIsPlaced(boolean isPlaced) {
-        this.isPlaced = isPlaced;
-    }
-
-    public boolean IsPlaced() {return isPlaced;}
 
     public void setDead (boolean dead) {
         this.dead = dead;
@@ -117,8 +110,8 @@ public class Balloom extends Entity {
                 x -= 0.25;
         }
 
-        System.out.println(state);
-        System.out.println(x +" " + y);
+      //  System.out.println(state);
+       // System.out.println(x +" " + y);
     }
     // 0, 1, 2 phai
     // 3, 4, 5 trai

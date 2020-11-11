@@ -1,0 +1,41 @@
+.title-screen{
+   -fx-background-image: url('/background/title_screen2.png');
+   -fx-background-position: center;
+   -fx-background-repeat: no-repeat;
+   -fx-background-size: cover;
+}
+
+.button-title1 {
+
+  -fx-background-color : black;
+  -fx-font-size : 33;
+  -fx-text-fill : white;
+}
+.button-title1:hover{
+ -fx-text-fill : red;
+}
+
+.button-title2 {
+
+  -fx-background-color : black;
+  -fx-font-size : 24;
+  -fx-text-fill : white;
+}
+.button-title2:hover{
+ -fx-text-fill : red;
+}
+
+.screen-game-over{
+
+-fx-background-image: url('/background/game_over_screen.png');
+ -fx-background-position: center;
+  -fx-background-repeat: no-repeat;
+  -fx-background-size: cover;
+
+}
+
+.label-game-over{
+   -fx-font-size : 25;
+   -fx-text-fill : white;
+}
+

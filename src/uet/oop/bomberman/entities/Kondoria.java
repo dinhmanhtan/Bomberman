@@ -31,6 +31,8 @@ public class Kondoria extends Entity{
         dead = false;
         totaltime = 0.0f;
         totaltime1 = 0.0f;
+
+        kt = false;
         duongdi = new ArrayList<>();
         imgKondoriaRight = new Image[3];
         imgKondoriaLeft = new Image[3];
@@ -191,8 +193,7 @@ public class Kondoria extends Entity{
         int dy = (int) y;
 
         timduong(dx , dy , "");
-        if( !duongdi.isEmpty()) {
-
+        if(!duongdingannhat().isEmpty()  ) {
             String s = duongdingannhat();
 
             if(s.charAt(0) == 'D') {
@@ -209,20 +210,23 @@ public class Kondoria extends Entity{
             }
 
             duongdi.removeAll(duongdi);
+            kt = false;
         }
     }
 
     public String duongdingannhat () {
+        String s = "";
+        if(!duongdi.isEmpty()) {
+            s = duongdi.get(0);
 
-        String s = duongdi.get(0);
-
-        for(String value : duongdi) {
-            if (s.length() > value.length()) {
-                s = value;
+            for (String value : duongdi) {
+                if (s.length() > value.length()) {
+                    s = value;
+                }
             }
-        }
 
-        return  s;
+        }
+        return s;
     }
 
     public void timduong(int x1, int y1, String ds) {

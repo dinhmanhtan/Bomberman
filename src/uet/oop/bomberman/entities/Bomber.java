@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.List;
 
 public class Bomber extends Entity {
-    private boolean dead;
+    //private boolean dead;
 
     public static  double totalTime ;
     public static double timeDead;

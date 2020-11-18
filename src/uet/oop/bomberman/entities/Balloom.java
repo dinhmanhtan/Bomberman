@@ -19,7 +19,6 @@ public class Balloom extends Entity {
     private float totaltime;
     private float totaltime1;
     private float totalDead;
-    private boolean dead;
 
     public Balloom(int x, int y, Image img) {
         super(x, y, img);
@@ -117,33 +116,32 @@ public class Balloom extends Entity {
     // 3, 4, 5 trai
 
     public void CheckMove(List<Entity> stillObjects) {
-        while (true) {
-            if(state == State.Up) {
-                if(!checkPosWall(stillObjects)) {
+        do {
+            if (state == State.Up) {
+                if (!checkPosWall(stillObjects)) {
                     state = State.Left;
                 }
             }
 
-            if(state == State.Down) {
-                if(!checkPosWall(stillObjects)) {
+            if (state == State.Down) {
+                if (!checkPosWall(stillObjects)) {
                     state = State.Right;
                 }
             }
 
-            if(state == State.Right) {
-                if(!checkPosWall(stillObjects)) {
+            if (state == State.Right) {
+                if (!checkPosWall(stillObjects)) {
                     state = State.Up;
                 }
             }
 
-            if(state == State.Left) {
-                if(!checkPosWall(stillObjects)) {
+            if (state == State.Left) {
+                if (!checkPosWall(stillObjects)) {
                     state = State.Down;
                 }
             }
 
-            if(checkPosWall(stillObjects)) break;
-        }
+        } while (!checkPosWall(stillObjects));
     }
 
     public void Radom () {

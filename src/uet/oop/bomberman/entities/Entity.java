@@ -12,6 +12,7 @@ public  class Entity {
     protected double x;
     protected double y;
     protected Image img;
+    protected boolean dead;
 
     protected boolean draw = true;
 
@@ -30,6 +31,15 @@ public  class Entity {
         this.y = y;
         this.img = img;
     }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
     public double getX() {
         return x;
     }

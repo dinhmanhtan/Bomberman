@@ -268,13 +268,17 @@ public class Bomb extends Entity{
 
                     if(CheckPosBomb(BombermanGame.bomberman))
                          BombermanGame.bomberman.setDead(true);
-                    if(CheckPosBomb(BombermanGame.balloom)) {
-                         BombermanGame.balloom.setDead(true);
+
+                    for (int n = 0 ; n < BombermanGame.monsters.size() ; n++) {
+                        if(CheckPosBomb(BombermanGame.monsters.get(n))) {
+                            BombermanGame.monsters.get(n).setDead(true);
+                        }
                     }
+
 
                 }
                 else  {
-                    playMusic(PlayMusic.explosion_sound);
+//                    playMusic(PlayMusic.explosion_sound);
                     Brick.remove(stillObject,(int)x,(int)y,xMin,yMin,xMax,yMax);
 
                     BombermanGame.hasWallPlayer[(int)y][(int)x] = false;
@@ -343,11 +347,11 @@ public class Bomb extends Entity{
 
     }
 
-    public  void playMusic(String path) {
-
-            Media media = new Media(new File(path).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.play();
-
-    }
+//    public  void playMusic(String path) {
+//
+//            Media media = new Media(new File(path).toURI().toString());
+//            mediaPlayer = new MediaPlayer(media);
+//            mediaPlayer.play();
+//
+//    }
 }

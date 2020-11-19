@@ -27,15 +27,23 @@
 
 .screen-game-over{
 
--fx-background-image: url('/background/game_over_screen.png');
- -fx-background-position: center;
+  -fx-background-image: url('/background/game_over_screen.png');
+  -fx-background-position: center;
   -fx-background-repeat: no-repeat;
   -fx-background-size: cover;
 
 }
 
 .label-game-over{
-   -fx-font-size : 25;
+   -fx-font-size : 23;
    -fx-text-fill : white;
 }
 
+.screen-playing{
+   -fx-background-color : black;
+}
+
+.screen-playing .label{
+ -fx-font-size : 25;
+ -fx-text-fill : white;
+}

@@ -33,6 +33,8 @@ public class Bomber extends Entity {
 
     private double speed;
     public int num_plays = 3;
+    public double timer ;
+    public int score;
 
 
     public Bomber(int x, int y, Image img) {
@@ -61,6 +63,8 @@ public class Bomber extends Entity {
         musicDead  = true;
 
         speed = 0.1;
+        timer = 220;
+        score =0;
 
         player_right = new Image[3];
         player_left = new Image[3];
@@ -105,6 +109,7 @@ public class Bomber extends Entity {
         musicDead  = true;
 
         speed = 0.1;
+        timer = 220;
         img = player_right[0];
     }
 
@@ -136,7 +141,8 @@ public class Bomber extends Entity {
 
 
     public void update(double deltaTime,List<Entity> stillObjects,List<Bomb> bombs,List <Entity> monster) {
-
+        timer -= deltaTime;
+        System.out.println((int)timer);
         DeadByMonster(monster);
 
         if(dead) {

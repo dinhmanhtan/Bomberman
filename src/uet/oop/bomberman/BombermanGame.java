@@ -1,5 +1,6 @@
 package uet.oop.bomberman;
 
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.embed.swing.JFXPanel;
@@ -7,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.AxisBuilder;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -47,7 +49,7 @@ public class BombermanGame extends Application {
     private Canvas canvas;
     protected List<Entity> entities ;
     protected List<Entity> stillObjects ;
-    public static Bomber bomberman;
+    public static Bomber bomberman ;
     public static Balloom balloom;
     public static Kondoria kondoria;
     protected List<Grass> grassList ;
@@ -64,9 +66,11 @@ public class BombermanGame extends Application {
     public static boolean GameOver;
 //
 //    public static boolean music_stage;
-    double timeResetStage;
-    double timePressEnter;
-    AnimationTimer animationTimer;
+    public double timeResetStage;
+    public double timePressEnter;
+    public AnimationTimer animationTimer;
+    public Label labelTimer,labelScore;
+    public double timer;
 
     public static void main(String[] args) { Application.launch(BombermanGame.class); }
 
@@ -80,7 +84,7 @@ public class BombermanGame extends Application {
         } catch (FileNotFoundException e) {
                e.printStackTrace();
         }
-        entities = new ArrayList<>();
+
         stillObjects = new ArrayList<>();
         grassList = new ArrayList<>();
         monsters = new ArrayList<>();
@@ -98,13 +102,14 @@ public class BombermanGame extends Application {
         hasWallMonster = new boolean[HEIGHT][WIDTH];
         isOk = new boolean[HEIGHT][WIDTH];
 
-        bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-        entities.add(bomberman);
+
+
         balloom = new Balloom(4, 5, Sprite.balloom_right1.getFxImage());
         kondoria = new Kondoria(8,9,Sprite.kondoria_right1.getFxImage());
 
         monsters.add(balloom);
         monsters.add(kondoria);
+        bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
    }
 
 
@@ -150,7 +155,6 @@ public class BombermanGame extends Application {
 
         anchorPane.getChildren().addAll(buttonExit,buttonPlay);
 
-
         scene = new Scene(anchorPane, Sprite.SCALED_SIZE*WIDTH, Sprite.SCALED_SIZE*(HEIGHT+1));
         scene.getStylesheets().add(getClass().getResource("/fxml/style.css").toExternalForm());
         stage.setScene(scene);
@@ -175,12 +179,22 @@ public class BombermanGame extends Application {
         gc = canvas.getGraphicsContext2D();
 
         // Tao root container
-        Group root = new Group();
+        AnchorPane root = new AnchorPane();
+        root.getStyleClass().add("screen-playing");
+        labelTimer = new Label();
+        labelTimer.setLayoutX(3*Sprite.SCALED_SIZE);
+        labelTimer.setLayoutY(4);
 
-        root.getChildren().add(canvas);
+        labelScore = new Label();
+        labelScore.setLayoutX(10*Sprite.SCALED_SIZE);
+        labelScore.setLayoutY(4);
+
+
+        root.getChildren().addAll(canvas,labelTimer,labelScore);
         canvas.setLayoutY(Sprite.SCALED_SIZE);
         // Tao scene
         scene = new Scene(root,Sprite.SCALED_SIZE*WIDTH,Sprite.SCALED_SIZE*(HEIGHT+1));
+        scene.getStylesheets().add(getClass().getResource("/fxml/style.css").toExternalForm());
 
         // Them scene vao stage
         stage.setScene(scene);
@@ -191,8 +205,9 @@ public class BombermanGame extends Application {
         item.setPosition(stillObjects);
         timeResetStage =0;
 
+        timer =200;
+        AnimationTimer animationTimer =   new AnimationTimer()  {
 
-        animationTimer =   new AnimationTimer()  {
             @Override
             public void handle(long now) {
 
@@ -203,6 +218,7 @@ public class BombermanGame extends Application {
                 prevTime = now;
 
                 if (!GameOver) {
+                    timer -= deltaTime;
                     update();
                     render();
                 } else {
@@ -210,7 +226,7 @@ public class BombermanGame extends Application {
 
                     if(timeResetStage > 3) {
 
-                        animationTimer.stop();
+                        this.stop();
                         GameOver(stage);
 
                     }
@@ -249,7 +265,7 @@ public class BombermanGame extends Application {
         prevTime = 0;
         timePressEnter =0;
 
-        animationTimer = new AnimationTimer() {
+      AnimationTimer animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 if(prevTime == 0) {
@@ -258,13 +274,7 @@ public class BombermanGame extends Application {
                 deltaTime = (now - prevTime)/1000000000;
                 prevTime = now;
 
-                scene.setOnKeyPressed(event -> {
-                    if(event.getCode() == KeyCode.ENTER) {
-                        animationTimer.stop();
-                        //mediaPlayer.stop();
-                        TitleScreen(stage);
-                    }
-                });
+
 
                 timePressEnter += deltaTime;
 
@@ -281,7 +291,13 @@ public class BombermanGame extends Application {
         };
         animationTimer.start();
 
-
+        scene.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ENTER) {
+                animationTimer.stop();
+                //mediaPlayer.stop();
+                TitleScreen(stage);
+            }
+        });
 
     }
 
@@ -347,6 +363,8 @@ public class BombermanGame extends Application {
 //       for (Entity entity : entities) {
 //           entity.update(scene,deltaTime);
 //       }
+        labelTimer.setText("Time : " + (int)timer);
+        labelScore.setText("Score : " + bomberman.score);
     }
 
     public void render() {

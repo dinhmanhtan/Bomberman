@@ -32,7 +32,6 @@ public class Bomber extends Entity {
     public int number_bomb ;
 
     private double speed;
-    public  MediaPlayer mediaPlayer;
     public int num_plays = 3;
 
 
@@ -142,8 +141,8 @@ public class Bomber extends Entity {
 
         if(dead) {
 
-//           playMusic(PlayMusic.death_sound,musicDead);
-//            musicDead = false;
+           playMusic(PlayMusic.death_sound,musicDead);
+           musicDead = false;
             AnimationPlayerDead( deltaTime);
 
         }
@@ -212,7 +211,7 @@ public class Bomber extends Entity {
                             bombs.get(i).setXY((int) x, (int) (y + 0.5));
 
                         bombs.get(i).setDraw(true);
-                        //playMusic(PlayMusic.put_bomb_sound,true);
+                        playMusic(PlayMusic.put_bomb_sound,true);
                     }
                 }
             }
@@ -230,11 +229,11 @@ public class Bomber extends Entity {
           indexSoundStep ++;
             // sang trái
             if(state == State.Left) {
-                if(x > 1  && !CheckPos(stillObjects)) {
+                if (x > 1 && !CheckPos(stillObjects)) {
 
-                    if(y - (int)y == 0.25)
+                    if (y - (int) y == 0.25)
                         y = (int) y;
-                    else if(y - (int)y == 0.75)      // Check vị trí sát mép tường cho phép di chuyển
+                    else if (y - (int) y == 0.75)      // Check vị trí sát mép tường cho phép di chuyển
                         y = (int) y + 1;
 
                     x -= 0.25;
@@ -243,10 +242,8 @@ public class Bomber extends Entity {
                 indexImg[0]++;
                 setImg(player_left[indexImg[0] % 3]);
 
-                if(indexSoundStep % 3 ==0){
-
-                }
-                   //playMusic(PlayMusic.step_horizontal_sound,true);
+                if (indexSoundStep % 3 == 0)
+                playMusic(PlayMusic.step_horizontal_sound,true);
 
                 // sang phải
             } else  if(state == State.Right) {
@@ -263,8 +260,8 @@ public class Bomber extends Entity {
                 indexImg[1]++;
                 setImg(player_right[indexImg[1] % 3]);
 
-                //if(indexSoundStep % 3 ==0)
-                  //playMusic(PlayMusic.step_horizontal_sound,true);
+                if(indexSoundStep % 3 ==0)
+                  playMusic(PlayMusic.step_horizontal_sound,true);
 
                 // xuống dưới
             } else if(state == State.Down ) {
@@ -281,8 +278,8 @@ public class Bomber extends Entity {
                 indexImg[3]++;
                 setImg(player_down[indexImg[3] % 3]);
 
-                //if(indexSoundStep % 3 ==0)
-                    //playMusic(PlayMusic.step_vertical_sound,true);
+                if(indexSoundStep % 3 ==0)
+                    playMusic(PlayMusic.step_vertical_sound,true);
 
                 // lên trên
             } else if(state == State.Up ) {
@@ -300,8 +297,8 @@ public class Bomber extends Entity {
                 indexImg[2]++;
                 setImg(player_up[indexImg[2] % 3]);
 
-                //if(indexSoundStep % 3 ==0)
-                   //playMusic(PlayMusic.step_vertical_sound,true);
+                if(indexSoundStep % 3 ==0)
+                   playMusic(PlayMusic.step_vertical_sound,true);
             }
             System.out.println(  x + "   " + y);
             totalTime = 0.0f;
@@ -360,13 +357,5 @@ public class Bomber extends Entity {
 
     }
 
-//    public  void playMusic(String path, boolean isPlay) {
-//
-//        if(isPlay) {
-//            Media media = new Media(new File(path).toURI().toString());
-//            mediaPlayer = new MediaPlayer(media);
-//            mediaPlayer.play();
-//        }
-//    }
 
 }

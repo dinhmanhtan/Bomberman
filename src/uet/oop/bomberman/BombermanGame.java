@@ -111,7 +111,7 @@ public class BombermanGame extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        stage.initStyle(StageStyle.UNDECORATED);   // cài đặt window bỏ thanh ở trên đầu
+      //  stage.initStyle(StageStyle.UNDECORATED);   // cài đặt window bỏ thanh ở trên đầu
 
       TitleScreen(stage);
     }
@@ -189,7 +189,7 @@ public class BombermanGame extends Application {
         Init();
         createMap();
         item.setPosition(stillObjects);
-//        timeResetStage =0;
+        timeResetStage =0;
 
 
         animationTimer =   new AnimationTimer()  {

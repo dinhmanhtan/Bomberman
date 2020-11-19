@@ -29,9 +29,10 @@ public class Bomb extends Entity{
 
     protected Entity[] bomb_horizontal;
     protected Entity[] bomb_vertical;
-    public MediaPlayer mediaPlayer;
+
 
     public  int xMax,xMin,yMax,yMin;   // lưu tọa độ bom nổ đầu và cuối
+    public  int xMax1,xMin1,yMax1,yMin1;
 
     public Bomb() {
         Init();
@@ -122,10 +123,10 @@ public class Bomb extends Entity{
             bomb_horizontal[1].setXY(x + 1, y);
             bomb_vertical[0].setXY(x, y - 1);
             bomb_vertical[1].setXY(x, y + 1);
-            xMin = X-1;
-            xMax = X+1;
-            yMin = Y-1;
-            yMax = Y+1;
+            xMin1 = xMin = X-1;
+            xMax1 =  xMax = X+1;
+            yMin1 =  yMin = Y-1;
+            yMax1 = yMax = Y+1;
 
         } else  {               // Cài đặt vị trí bom nổ khi có item Flame
 
@@ -134,25 +135,32 @@ public class Bomb extends Entity{
             if(BombermanGame.hasWallPlayer[Y][X-1] ) {
                 bomb_horizontal[0].setXY(100,100);
                 xMin = X-1;
+                xMin1 = X;
             } else if (BombermanGame.hasWallPlayer[Y][X-2]) {
                 bomb_horizontal[0].setXY(x-1,y);
                 xMin = X-2;
+                xMin1 = X-1;
             } else if(X > 1) {
                 bomb_horizontal[0].setXY(x-2,y);
                 bomb_horizontal[2].setXY(x-1,y);
                 xMin = X;
+                xMin1 = X-2;
             }
+
 
             // Phải
             bomb_horizontal[3].setXY(100,100);
             if(BombermanGame.hasWallPlayer[Y][X+1]) {
                 bomb_horizontal[1].setXY(100,100);
                 xMax = X +1;
+                xMax1 = X;
             } else if (BombermanGame.hasWallPlayer[Y][X+2]) {
                 bomb_horizontal[1].setXY(x+1,y);
                 xMax = X +2;
+                xMax1 = X+1;
             } else  {
                 xMax = X;
+                xMax1 = X+2;
                 bomb_horizontal[1].setXY(x+2,y);
                 bomb_horizontal[3].setXY(x+1,y);
             }
@@ -162,15 +170,18 @@ public class Bomb extends Entity{
             if(BombermanGame.hasWallPlayer[Y-1][X]) {
                 bomb_vertical[0].setXY(100,100);
                 yMin = Y-1;
+                yMin1 = Y;
 
             } else if (BombermanGame.hasWallPlayer[Y-2][X]) {
                 bomb_vertical[0].setXY(x,y-1);
                 yMin = Y-2;
+                yMin1 = Y-1;
 
             } else if(Y > 1){
                 bomb_vertical[0].setXY(x,y-2);
                 bomb_vertical[2].setXY(x,y-1);
-                yMin = 100;
+                yMin = Y;
+                yMin1 = Y-2;
             }
 
             // Dưới
@@ -178,15 +189,18 @@ public class Bomb extends Entity{
             if(BombermanGame.hasWallPlayer[Y+1][X]) {
                 bomb_vertical[1].setXY(100,100);
                 yMax = Y+1;
+                yMax1 = Y;
 
             } else if (BombermanGame.hasWallPlayer[Y+2][X]) {
                 bomb_vertical[1].setXY(x,y+1);
                 yMax = Y+2;
+                yMax1 = Y+1;
 
             } else {
                 bomb_vertical[1].setXY(x,y+2);
                 bomb_vertical[3].setXY(x,y+1);
-                yMax =100;
+                yMax =Y;
+                yMax1 = Y+2;
             }
 
 
@@ -278,7 +292,7 @@ public class Bomb extends Entity{
 
                 }
                 else  {
-//                    playMusic(PlayMusic.explosion_sound);
+                    playMusic(PlayMusic.explosion_sound,true);
                     Brick.remove(stillObject,(int)x,(int)y,xMin,yMin,xMax,yMax);
 
                     BombermanGame.hasWallPlayer[(int)y][(int)x] = false;
@@ -296,27 +310,13 @@ public class Bomb extends Entity{
     boolean CheckPosBomb(Entity entity) {
 
         if(draw) {
-            if ((int) entity.x == (int)x &&  Math.abs((int) entity.y - (int)y) < 1 )
+
+
+            if( ((  y -entity.y <=0.75 &&  entity.y < y) || (int)entity.y == y )&& entity.x >= xMin1-0.5 && entity.x <= xMax1+0.75)
                 return true;
 
-                if (bomb_horizontal[0].isDraw() && Math.abs(entity.x - bomb_horizontal[0].getX()) < 0.75
-                        &&  Math.abs(entity.y - bomb_horizontal[0].getY()) <1 )
-                    return true;
-                if (bomb_horizontal[1].isDraw() && Math.abs(entity.x - bomb_horizontal[1].getX()) < 1
-                    &&  Math.abs(entity.y - bomb_horizontal[1].getY()) <1 )
+            if( ( (x-entity.x <=0.5 && x > entity.x ) || ((int)entity.x == x ))   && entity.y >= yMin1-0.5 && entity.y <= yMax1)
                 return true;
-
-                if (bomb_vertical[1].isDraw() && ((entity.x >= bomb_vertical[1].getX() && (entity.x - bomb_vertical[1].getX()) < 1 )
-                      || (entity.x <= bomb_vertical[1].getX() && bomb_vertical[1].getX()-entity.x <0.75)  )
-                        &&  Math.abs(entity.y - bomb_vertical[1].getY()) <1 )
-
-                    return true;
-
-                if (bomb_vertical[0].isDraw() && ((entity.x >= bomb_vertical[0].getX() && (entity.x - bomb_vertical[0].getX()) < 1 )
-                    || (entity.x <= bomb_vertical[1].getX() && bomb_vertical[0].getX()-entity.x <0.75)   )
-                    &&  Math.abs(entity.y - bomb_vertical[0].getY()) <1 )
-                   return true;
-
 
         }
 
@@ -347,11 +347,5 @@ public class Bomb extends Entity{
 
     }
 
-//    public  void playMusic(String path) {
-//
-//            Media media = new Media(new File(path).toURI().toString());
-//            mediaPlayer = new MediaPlayer(media);
-//            mediaPlayer.play();
-//
-//    }
+
 }

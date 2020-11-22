@@ -21,7 +21,7 @@ public  class Entity {
 
     protected boolean draw = true;
 
-    enum  State {Up, Down, Right, Left, Stand}
+    public enum  State {Up, Down, Right, Left, Stand}
     protected State state;
 
     public Entity() {}

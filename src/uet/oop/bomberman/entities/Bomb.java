@@ -286,6 +286,7 @@ public class Bomb extends Entity{
                     for (int n = 0 ; n < BombermanGame.monsters.size() ; n++) {
                         if(CheckPosBomb(BombermanGame.monsters.get(n))) {
                             BombermanGame.monsters.get(n).setDead(true);
+
                         }
                     }
 

@@ -1,40 +1,29 @@
 package uet.oop.bomberman;
 
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.embed.swing.JFXPanel;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.chart.AxisBuilder;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.monster.Balloom;
+import uet.oop.bomberman.monster.Kondoria;
 import uet.oop.bomberman.graphics.Sprite;
-import javax.sound.sampled.*;
+import uet.oop.bomberman.monster.Monster;
+
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Timer;
 
 public class BombermanGame extends Application {
     
@@ -48,21 +37,21 @@ public class BombermanGame extends Application {
     private GraphicsContext gc;
     private Canvas canvas;
     protected List<Entity> entities ;
-    protected List<Entity> stillObjects ;
+    public static List<Entity> stillObjects ;
     public static Bomber bomberman ;
-    public static Balloom balloom;
-    public static Kondoria kondoria;
+    public static Balloom balloom[] = new Balloom[4];
+    public static Kondoria kondoria[] = new Kondoria[4];
     protected List<Grass> grassList ;
-    public static List<Entity> monsters ;
+    public static List<Monster> monsters ;
     public  List<Bomb> bombs ;
     public  Item item;
     public static boolean[][] hasWallPlayer;  // dành cho player
     public static boolean[][] hasWallMonster;  // dành cho quái
     public static boolean[][] isOk;
 
-//    public PlayMusic music;
-//    public static  MediaPlayer mediaPlayer;
-//    public  Media media;
+    public PlayMusic music;
+    public static  MediaPlayer mediaPlayer;
+    public  Media media;
     public static boolean GameOver;
 //
 //    public static boolean music_stage;
@@ -84,40 +73,59 @@ public class BombermanGame extends Application {
         } catch (FileNotFoundException e) {
                e.printStackTrace();
         }
-
-        stillObjects = new ArrayList<>();
-        grassList = new ArrayList<>();
+//
+//        stillObjects = new ArrayList<>();
+//        grassList = new ArrayList<>();
         monsters = new ArrayList<>();
-        bombs = new ArrayList<>();
-
-
-        Bomb bomb = new Bomb();
-        bombs.add(bomb);
+//        bombs = new ArrayList<>();
+//
+//
+//        Bomb bomb = new Bomb();
+//        bombs.add(bomb);
 
 //        music = new PlayMusic();
 //        music_stage = true;
 
-        item = new Item();
+ //       item = new Item();
         hasWallPlayer = new boolean[HEIGHT][WIDTH];   // lưu vị trí các wall,brick
         hasWallMonster = new boolean[HEIGHT][WIDTH];
         isOk = new boolean[HEIGHT][WIDTH];
 
 
-
-        balloom = new Balloom(4, 5, Sprite.balloom_right1.getFxImage());
-        kondoria = new Kondoria(8,9,Sprite.kondoria_right1.getFxImage());
-
-        monsters.add(balloom);
-        monsters.add(kondoria);
         bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
    }
 
+   public void InitStage1() {
+        GameOver = false;
+
+         stillObjects = new ArrayList<>();
+         grassList = new ArrayList<>();
+         monsters = new ArrayList<>();
+         bombs = new ArrayList<>();
+
+         balloom[0] = new Balloom(4, 5, Sprite.balloom_right1.getFxImage());
+         balloom[1] = new Balloom(12, 1, Sprite.balloom_right1.getFxImage());
+         balloom[2] = new Balloom(25, 6, Sprite.balloom_right1.getFxImage());
+         kondoria[0] = new Kondoria(8,9,Sprite.kondoria_right1.getFxImage());
+
+         item = new Item();
+         Bomb bomb = new Bomb();
+         bombs.add(bomb);
+
+         monsters.add(balloom[0]);
+         monsters.add(balloom[1]);
+         monsters.add(balloom[2]);
+         monsters.add(kondoria[0]);
+         bomberman.Reset();
+
+         createMap();
+   }
 
     @Override
     public void start(Stage stage) throws IOException {
 
       //  stage.initStyle(StageStyle.UNDECORATED);   // cài đặt window bỏ thanh ở trên đầu
-
+      Init();
       TitleScreen(stage);
     }
 
@@ -160,12 +168,12 @@ public class BombermanGame extends Application {
         stage.setScene(scene);
         stage.show();
 
-  //      PlayMusicLoop(PlayMusic.title_screen_music);
+        PlayMusicLoop(PlayMusic.title_screen_music);
 
         buttonExit.setOnMouseClicked(event -> stage.close());
 
         buttonPlay.setOnMouseClicked(event -> {
-
+            mediaPlayer.stop();
             Game(stage);
 
 
@@ -200,12 +208,11 @@ public class BombermanGame extends Application {
         stage.setScene(scene);
         //    stage.show();
 
-        Init();
-        createMap();
+        InitStage1();
+
         item.setPosition(stillObjects);
         timeResetStage =0;
 
-        timer =200;
         AnimationTimer animationTimer =   new AnimationTimer()  {
 
             @Override
@@ -223,10 +230,11 @@ public class BombermanGame extends Application {
                     render();
                 } else {
                     timeResetStage += deltaTime;
-
+                    mediaPlayer.stop();
                     if(timeResetStage > 3) {
 
                         this.stop();
+
                         GameOver(stage);
 
                     }
@@ -237,7 +245,7 @@ public class BombermanGame extends Application {
         };
         animationTimer.start();
 
-        //PlayMusicLoop(PlayMusic.stage_theme_music);
+        PlayMusicLoop(PlayMusic.stage_theme_music);
 
     }
 
@@ -260,7 +268,7 @@ public class BombermanGame extends Application {
         stage.show();
 
 
-        //PlayMusicLoop(PlayMusic.game_over_music);
+        PlayMusicLoop(PlayMusic.game_over_music);
 
         prevTime = 0;
         timePressEnter =0;
@@ -294,7 +302,7 @@ public class BombermanGame extends Application {
         scene.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ENTER) {
                 animationTimer.stop();
-                //mediaPlayer.stop();
+                mediaPlayer.stop();
                 TitleScreen(stage);
             }
         });
@@ -303,19 +311,19 @@ public class BombermanGame extends Application {
 
 
 
-//   public void PlayMusicLoop(String path) {
-//
-//
-//        media = new Media(new File(path).toURI().toString());
-//       mediaPlayer = new MediaPlayer(media);
-//       mediaPlayer.setOnEndOfMedia(new Runnable() {
-//           public void run() {
-//               mediaPlayer.seek(Duration.ZERO);
-//           }
-//       });
-//
-//       mediaPlayer.play();
-//   }
+   public void PlayMusicLoop(String path) {
+
+
+        media = new Media(new File(path).toURI().toString());
+       mediaPlayer = new MediaPlayer(media);
+       mediaPlayer.setOnEndOfMedia(new Runnable() {
+           public void run() {
+               mediaPlayer.seek(Duration.ZERO);
+           }
+       });
+
+       mediaPlayer.play();
+   }
 
     public void createMap() {
         for (int i = 0; i < s.size(); i++) {
@@ -349,21 +357,23 @@ public class BombermanGame extends Application {
        // entities.forEach(Entity::update(scene,0));
         bomberman.update(deltaTime,stillObjects,bombs,monsters);
 
-        if(balloom.isDraw())
-        balloom.update(deltaTime,stillObjects);
-        if(kondoria.isDraw()) {
-            kondoria.update(deltaTime);
-        }
 
         item.update(bombs);
 
         for (Bomb bom : bombs)
           bom.update(deltaTime,stillObjects);
 
-//       for (Entity entity : entities) {
-//           entity.update(scene,deltaTime);
-//       }
-        labelTimer.setText("Time : " + (int)timer);
+
+        for(int i=0; i<monsters.size(); i++) {
+            if(monsters.get(i).isDraw())
+                monsters.get(i).update(deltaTime);
+            else {
+                monsters.remove(i);
+                i--;
+            }
+        }
+
+        labelTimer.setText("Time : " + (int)bomberman.timer);
         labelScore.setText("Score : " + bomberman.score);
     }
 
@@ -374,7 +384,7 @@ public class BombermanGame extends Application {
         stillObjects.forEach(g -> g.render(gc));
 
         if(!monsters.isEmpty())
-        monsters.forEach(g -> g.render(gc));
+          monsters.forEach(g -> g.render(gc));
 
         for (Bomb bom : bombs)
           if(bom.isDraw())

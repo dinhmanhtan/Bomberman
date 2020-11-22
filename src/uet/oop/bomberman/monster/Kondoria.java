@@ -1,18 +1,18 @@
-package uet.oop.bomberman.entities;
+package uet.oop.bomberman.monster;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Kondoria extends Entity{
-    private Image[] mob_dead;
+public class Kondoria extends Monster {
     private Image[] imgKondoriaLeft;
     private Image[] imgKondoriaRight;
-    private Image imgKondoriaDead;
+
 
     public boolean kt ;
     private float totaltime;
@@ -23,20 +23,25 @@ public class Kondoria extends Entity{
     public Kondoria (int x, int y, Image img) {
         super(x, y , img);
         init();
+
     }
 
+    @Override
     public void init() {
         draw = true;
         state = State.Left;
         dead = false;
         totaltime = 0.0f;
         totaltime1 = 0.0f;
+        mob_dead = new Image[3];
 
+        mob_dead[0] = Sprite.mob_dead1.getFxImage();
+        mob_dead[1] = Sprite.mob_dead2.getFxImage();
+        mob_dead[2] = Sprite.mob_dead3.getFxImage();
         kt = false;
         duongdi = new ArrayList<>();
         imgKondoriaRight = new Image[3];
         imgKondoriaLeft = new Image[3];
-        mob_dead = new Image[3];
 
         imgKondoriaRight[0] = Sprite.kondoria_right1.getFxImage();
         imgKondoriaRight[1] = Sprite.kondoria_right2.getFxImage();
@@ -44,15 +49,11 @@ public class Kondoria extends Entity{
         imgKondoriaLeft[0] = Sprite.kondoria_left1.getFxImage();
         imgKondoriaLeft[1] = Sprite.kondoria_left2.getFxImage();
         imgKondoriaLeft[2] = Sprite.kondoria_left3.getFxImage();
-
-        mob_dead[0] = Sprite.mob_dead1.getFxImage();
-        mob_dead[1] = Sprite.mob_dead2.getFxImage();
-        mob_dead[2] = Sprite.mob_dead3.getFxImage();
-
-        imgKondoriaDead = Sprite.kondoria_dead.getFxImage();
+        imgMonsterDead = Sprite.kondoria_dead.getFxImage();
 
     }
 
+    @Override
     public void  update (double deltaTime) {
         totaltime += deltaTime;
 
@@ -61,19 +62,12 @@ public class Kondoria extends Entity{
         }
         else {
             insertImg();
-            moving(deltaTime);
+            moving(deltaTime,0.2);
         }
     }
 
 
-    public void moving (double deltaTime) {
-        totaltime1 += deltaTime;
 
-        if(totaltime1 >= 0.2) {
-            move();
-            totaltime1 = 0.0f;
-        }
-    }
 
     public void insertImg() {
         if(state == State.Down || state == State.Right) {
@@ -110,78 +104,41 @@ public class Kondoria extends Entity{
         }
     }
 
-    public void move(){
+    @Override
+    public void moving (double deltaTime,double timeSpeed) {
+        totaltime1 += deltaTime;
 
-        Animation();
+        if(totaltime1 >= timeSpeed) {
 
-        CheckMove();
-        if(state == State.Up) {
-            y -= 0.25;
-        }
-        if(state == State.Down) {
 
-            y += 0.25;
-        }
-        if(state == State.Right) {
-            x += 0.25;
-        }
-        if(state == State.Left) {
-            x -= 0.25;
+            Animation();
+
+            CheckMove();
+            if(state == State.Up) {
+                y -= 0.25;
+            }
+            if(state == State.Down) {
+
+                y += 0.25;
+            }
+            if(state == State.Right) {
+                x += 0.25;
+            }
+            if(state == State.Left) {
+                x -= 0.25;
+            }
+
+            totaltime1 = 0.0f;
         }
     }
 
 
-    public void CheckMove() {
-        do {
-            if (state == State.Up) {
-                if (!checkPosWall()) {
-                    state = State.Left;
-                }
-            }
-
-            if (state == State.Down) {
-                if (!checkPosWall()) {
-                    state = State.Right;
-                }
-            }
-
-            if (state == State.Right) {
-                if (!checkPosWall()) {
-                    state = State.Up;
-                }
-            }
-
-            if (state == State.Left) {
-                if (!checkPosWall()) {
-                    state = State.Down;
-                }
-            }
-
-        } while (!checkPosWall());
-    }
-
-    public boolean checkPosWall() {
-
-        if (state == State.Right && BombermanGame.hasWallMonster[(int) (y)][(int) (x + 1)])
-            return false;
-
-        if (state == State.Left && BombermanGame.hasWallMonster[(int) (y)][(int) (x - 0.25)])
-            return false;
-
-        if (state == State.Up && BombermanGame.hasWallMonster[(int) (y - 0.25)][(int) x])
-            return false;
-
-        if (state == State.Down && BombermanGame.hasWallMonster[(int) (y + 1)][(int) (x)])
-            return false;
-
-        return true;
-    }
-
+    @Override
     public void Animation() {
         int x1 = (int) BombermanGame.bomberman.getX();
         int y1 = (int) BombermanGame.bomberman.getY();
 
-        if (Math.sqrt((x - x1)*(x - x1) + (y - y1)*(y - y1)) < 10) {
+        if (Math.sqrt((x - x1)*(x - x1) + (y - y1)*(y - y1)) < 7) {
             if(x - (int)x == 0 && y - (int) y == 0)
                 State();
         }
@@ -192,9 +149,9 @@ public class Kondoria extends Entity{
         int dx = (int) x;
         int dy = (int) y;
 
-        timduong(dx , dy , "");
-        if(!duongdingannhat().isEmpty()  ) {
-            String s = duongdingannhat();
+        FindShortestPath(dx , dy , "");
+        if(!ShortestPath().isEmpty()  ) {
+            String s = ShortestPath();
 
             if(s.charAt(0) == 'D') {
                 state = State.Down;
@@ -214,7 +171,7 @@ public class Kondoria extends Entity{
         }
     }
 
-    public String duongdingannhat () {
+    public String ShortestPath () {
         String s = "";
         if(!duongdi.isEmpty()) {
             s = duongdi.get(0);
@@ -229,35 +186,35 @@ public class Kondoria extends Entity{
         return s;
     }
 
-    public void timduong(int x1, int y1, String ds) {
+    public void FindShortestPath(int x1, int y1, String ds) {
 
-        if (x1 == (int) BombermanGame.bomberman.x && y1 == (int) BombermanGame.bomberman.y) {
+        if (x1 == (int) BombermanGame.bomberman.getX() && y1 == (int) BombermanGame.bomberman.getY()) {
             kt = true;
             duongdi.add(ds);
         }
         else {
             if (x1 < BombermanGame.WIDTH - 1 && !BombermanGame.hasWallMonster[y1][x1 + 1] && !BombermanGame.isOk[y1][x1 + 1]) {
                 BombermanGame.isOk[y1][x1] = true;
-                timduong(x1 + 1, y1, ds + "R");
+                FindShortestPath(x1 + 1, y1, ds + "R");
                 BombermanGame.isOk[y1][x1] = false;
             }
 
             if (y1 < BombermanGame.HEIGHT - 1 && !BombermanGame.hasWallMonster[y1 + 1][x1] && !BombermanGame.isOk[y1 + 1][x1]) {
                 BombermanGame.isOk[y1][x1] = true;
-                timduong(x1, y1 + 1, ds + "D");
+                FindShortestPath(x1, y1 + 1, ds + "D");
                 BombermanGame.isOk[y1][x1] = false;
             }
 
 
             if (x1 > 0 && !BombermanGame.hasWallMonster[y1][x1 - 1] && !BombermanGame.isOk[y1][x1 - 1]) {
                 BombermanGame.isOk[y1][x1] = true;
-                timduong(x1 -1 ,y1, ds + "L");
+                FindShortestPath(x1 -1 ,y1, ds + "L");
                 BombermanGame.isOk[y1][x1] = false;
             }
 
             if (y1 > 0 && !BombermanGame.hasWallMonster[y1 - 1][x1] && !BombermanGame.isOk[y1 - 1][x1]) {
                 BombermanGame.isOk[y1][x1] = true;
-                timduong(x1, y1 - 1, ds + "U");
+                FindShortestPath(x1, y1 - 1, ds + "U");
                 BombermanGame.isOk[y1][x1] = false;
             }
         }
@@ -268,7 +225,7 @@ public class Kondoria extends Entity{
     public void AnimationDead(double deltaTime) {
         totalDead += deltaTime;
         if(totalDead <= 0.4) {
-            setImg(imgKondoriaDead);
+            setImg(imgMonsterDead);
         }
         if (totalDead <= 0.7) {
             for (int i = 0 ; i < 3 ; i++) {
@@ -279,6 +236,7 @@ public class Kondoria extends Entity{
         } else if (totalDead > 0.7) {
             draw = false;
             totalDead = 0;
+            BombermanGame.bomberman.score += 200;
             BombermanGame.monsters.remove(this);
 
         }

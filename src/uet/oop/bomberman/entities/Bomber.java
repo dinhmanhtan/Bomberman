@@ -12,6 +12,7 @@ import javafx.scene.media.MediaPlayer;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.PlayMusic;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.monster.Monster;
 
 import java.io.File;
 import java.util.List;
@@ -110,6 +111,7 @@ public class Bomber extends Entity {
 
         speed = 0.1;
         timer = 220;
+        score = 0;
         img = player_right[0];
     }
 
@@ -140,9 +142,9 @@ public class Bomber extends Entity {
 
 
 
-    public void update(double deltaTime,List<Entity> stillObjects,List<Bomb> bombs,List <Entity> monster) {
+    public void update(double deltaTime,List<Entity> stillObjects,List<Bomb> bombs,List <Monster> monster) {
         timer -= deltaTime;
-        System.out.println((int)timer);
+
         DeadByMonster(monster);
 
         if(dead) {
@@ -313,7 +315,7 @@ public class Bomber extends Entity {
 
     }
 
-    public void DeadByMonster(List <Entity> monster) {
+    public void DeadByMonster(List <Monster> monster) {
         if(CheckDeadByMonster(monster)) {
 
             dead = true;
@@ -321,20 +323,22 @@ public class Bomber extends Entity {
 
     }
 
-    public boolean CheckDeadByMonster(List <Entity> monster) {
+    public boolean CheckDeadByMonster(List <Monster> monster) {
 
-        for (Entity entity : monster) {
-            if ((entity.getState() == State.Down || entity.getState() == State.Up)) {
+        for (Monster entity : monster) {
 
-                if ((x >= entity.x) && (x - entity.x) < 1 && Math.abs(y - entity.y) < 1)
+            if(entity.isDraw()) {
+                if ((entity.getState() == State.Down || entity.getState() == State.Up)) {
+
+                    if ((x >= entity.x) && (x - entity.x) < 1 && Math.abs(y - entity.y) < 1)
+                        return true;
+
+                    if (entity.x > x && entity.x - x < 0.75 && Math.abs(y - entity.y) < 1)
+                        return true;
+
+                } else if (Math.abs(entity.y - y) < 1 && Math.abs(x - entity.x) < 0.75)
                     return true;
-
-                if (entity.x > x && entity.x - x < 0.75 && Math.abs(y - entity.y) < 1)
-                    return true;
-
-            } else if (Math.abs(entity.y - y) < 1 && Math.abs(x - entity.x) < 0.75)
-                return true;
-
+            }
         }
 
         return false;

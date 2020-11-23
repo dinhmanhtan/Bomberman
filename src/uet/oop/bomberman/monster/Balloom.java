@@ -17,7 +17,6 @@ public class Balloom extends Monster {
     private int rd;
     private final Random random = new Random();
 
-    private float totalDead;
 
     public Balloom(int x, int y, Image img) {
         super(x, y, img);

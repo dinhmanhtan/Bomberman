@@ -97,10 +97,10 @@ public class Item extends Entity{
                 if(BombermanGame.bomberman.level == 3)
                     BombermanGame.win = true;
 
-                BombermanGame.mediaPlayer.stop();
+    //            BombermanGame.mediaPlayer.stop();
 
                 Entity entity = new Entity();
-                entity.playMusic(PlayMusic.stage_complete_music,true);
+               // entity.playMusic(PlayMusic.stage_complete_music,true);
 
         }
     }

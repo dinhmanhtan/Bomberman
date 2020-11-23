@@ -2,8 +2,8 @@ package uet.oop.bomberman.monster;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
-import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Sprite;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +15,6 @@ public class Kondoria extends Monster {
 
 
     public boolean kt ;
-    private float totaltime;
-    private float totaltime1;
-    private float totalDead;
     public List <String> duongdi;
 
     public Kondoria (int x, int y, Image img) {
@@ -33,6 +30,8 @@ public class Kondoria extends Monster {
         dead = false;
         totaltime = 0.0f;
         totaltime1 = 0.0f;
+
+
         mob_dead = new Image[3];
 
         mob_dead[0] = Sprite.mob_dead1.getFxImage();
@@ -53,6 +52,7 @@ public class Kondoria extends Monster {
 
     }
 
+
     @Override
     public void  update (double deltaTime) {
         totaltime += deltaTime;
@@ -67,8 +67,6 @@ public class Kondoria extends Monster {
     }
 
 
-
-
     public void insertImg() {
         if(state == State.Down || state == State.Right) {
             insertImgRight(0.3);
@@ -78,6 +76,7 @@ public class Kondoria extends Monster {
             insertImgLeft(0.3);
         }
     }
+
     public void  insertImgLeft(double time) {
         if (totaltime <= 3 * time) {
             for (int i = 0; i < 3; i++) {
@@ -110,7 +109,6 @@ public class Kondoria extends Monster {
 
         if(totaltime1 >= timeSpeed) {
 
-
             Animation();
 
             CheckMove();
@@ -138,7 +136,7 @@ public class Kondoria extends Monster {
         int x1 = (int) BombermanGame.bomberman.getX();
         int y1 = (int) BombermanGame.bomberman.getY();
 
-        if (Math.sqrt((x - x1)*(x - x1) + (y - y1)*(y - y1)) < 7) {
+        if (Math.sqrt((x - x1)*(x - x1) + (y - y1)*(y - y1)) < 15) {
             if(x - (int)x == 0 && y - (int) y == 0)
                 State();
         }
@@ -165,7 +163,7 @@ public class Kondoria extends Monster {
             if(s.charAt(0) == 'L') {
                 state = State.Left;
             }
-
+            System.out.println(s);
             duongdi.removeAll(duongdi);
             kt = false;
         }
@@ -219,7 +217,23 @@ public class Kondoria extends Monster {
             }
         }
 
+    }
 
+    @Override
+    public boolean checkPosWall() {
+        if (state == State.Right && BombermanGame.hasWall[(int) (y)][(int) (x + 1)])
+            return false;
+
+        if (state == State.Left && BombermanGame.hasWall[(int) (y)][(int) (x - 0.25)])
+            return false;
+
+        if (state == State.Up && BombermanGame.hasWall[(int) (y - 0.25)][(int) x])
+            return false;
+
+        if (state == State.Down && BombermanGame.hasWall[(int) (y + 1)][(int) (x)])
+            return false;
+
+        return true;
     }
 
 }

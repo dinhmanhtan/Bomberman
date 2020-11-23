@@ -293,7 +293,7 @@ public class Bomb extends Entity{
 
                 }
                 else  {
-                    playMusic(PlayMusic.explosion_sound,true);
+                  //  playMusic(PlayMusic.explosion_sound,true);
                     Brick.remove(stillObject,(int)x,(int)y,xMin,yMin,xMax,yMax);
 
                     BombermanGame.hasWallPlayer[(int)y][(int)x] = false;

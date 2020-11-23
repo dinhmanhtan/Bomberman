@@ -344,6 +344,7 @@ public class Bomb extends Entity{
 
 
     public void update( double time,List<Entity> stillObject) {
+
         Animation(time,stillObject);
 
     }

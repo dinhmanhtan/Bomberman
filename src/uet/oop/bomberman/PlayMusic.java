@@ -17,6 +17,9 @@ public class PlayMusic {
     public static final String death_sound = "res/music/death.wav";
     public static final String life_lost_music = "res/music/08_Life Lost.mp3";
     public static final String game_over_music = "res/music/09_Game Over.mp3";
+    public static final String ending_music = "res/music/10_Ending.mp3";
+    public static final String stage_start_music = "res/music/02_Stage Start.mp3";
+    public static final String stage_complete_music = "res/music/05_Stage Complete.mp3";
 
     public MediaPlayer mediaPlayer;
 

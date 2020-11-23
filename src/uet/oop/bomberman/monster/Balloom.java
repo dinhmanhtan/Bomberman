@@ -135,23 +135,5 @@ public class Balloom extends Monster {
 
     }
 
-    public void AnimationDead(double deltaTime) {
-        totalDead += deltaTime;
-        if(totalDead <= 0.4) {
-            setImg(imgMonsterDead);
-        }
-        if (totalDead <= 0.7) {
-            for (int i = 0 ; i < 3 ; i++) {
-                if(totalDead >= 0.4 + i*0.1) {
-                    setImg(mob_dead[i]);
-                }
-            }
-        } else if (totalDead > 0.7) {
-            draw = false;
-            totalDead = 0;
-            BombermanGame.bomberman.score += 200;
-          //  BombermanGame.monsters.remove(this);
 
-        }
-    }
 }

@@ -102,12 +102,12 @@ public  class Entity {
 
     }
     public  void playMusic(String path, boolean isPlay) {
-//
-//        if(isPlay) {
-//            Media media = new Media(new File(path).toURI().toString());
-//            mediaPlayer = new MediaPlayer(media);
-//            mediaPlayer.play();
-//        }
+
+        if(isPlay) {
+            Media media = new Media(new File(path).toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.play();
+        }
     }
 
 

@@ -34,6 +34,30 @@
 
 }
 
+.screen-game-ending{
+
+  -fx-background-image: url('/background/win.png');
+  -fx-background-position: center;
+  -fx-background-repeat: no-repeat;
+  -fx-background-size: cover;
+
+}
+.screen-stage-1{
+   -fx-background-image: url('/background/stage1.png');
+   -fx-background-position: center;
+   -fx-background-repeat: no-repeat;
+   -fx-background-size: cover;
+
+}
+
+.screen-stage-2{
+   -fx-background-image: url('/background/stage2.png');
+   -fx-background-position: center;
+   -fx-background-repeat: no-repeat;
+   -fx-background-size: cover;
+
+}
+
 .label-game-over{
    -fx-font-size : 23;
    -fx-text-fill : white;

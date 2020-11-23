@@ -36,7 +36,8 @@ public class Bomber extends Entity {
     public int num_plays = 3;
     public double timer ;
     public int score;
-
+    public int level ;
+    public boolean hasFlame;
 
     public Bomber(int x, int y, Image img) {
         super( x, y, img);
@@ -45,6 +46,7 @@ public class Bomber extends Entity {
 
     public void setDead(boolean dead) {this.dead = dead;}
     public void setSpeed(double speed) {this.speed = speed;}
+    public double getSpeed() {return speed;}
     public  boolean getDeath() {return this.dead;}
 
     /**
@@ -53,6 +55,8 @@ public class Bomber extends Entity {
     public void Init(){
 
         x = y = 1;
+        level = 1;
+        hasFlame = false;
 
         dead = false;
         totalTime =0.0;
@@ -143,7 +147,9 @@ public class Bomber extends Entity {
 
 
     public void update(double deltaTime,List<Entity> stillObjects,List<Bomb> bombs,List <Monster> monster) {
-        timer -= deltaTime;
+
+        if(timer >0)
+          timer -= deltaTime;
 
         DeadByMonster(monster);
 
@@ -164,7 +170,9 @@ public class Bomber extends Entity {
 
         Moving(stillObjects);
 
-
+       if(hasFlame)
+           for(Bomb bomb : bombs)
+               bomb.hasFlame = true;
     }
 
     public void HandlePressKey(List<Bomb> bombs, double deltaTime) {
@@ -361,8 +369,8 @@ public class Bomber extends Entity {
 
             draw = false;
             BombermanGame.GameOver = true;
-        //    BombermanGame.mediaPlayer.stop();
-            //playMusic(PlayMusic.life_lost_music,true);
+            BombermanGame.mediaPlayer.stop();
+            playMusic(PlayMusic.life_lost_music,true);
         }
 
     }

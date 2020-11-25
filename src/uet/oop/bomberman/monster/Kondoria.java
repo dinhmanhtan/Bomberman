@@ -1,7 +1,9 @@
 package uet.oop.bomberman.monster;
 
+import com.sun.org.apache.bcel.internal.generic.ARETURN;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.entities.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
 
 
@@ -144,29 +146,55 @@ public class Kondoria extends Monster {
     }
 
     public void State () {
-        int dx = (int) x;
-        int dy = (int) y;
+        double dx = BombermanGame.bomberman.getX() - x;
+        double dy = BombermanGame.bomberman.getY() - y;
+        double mau = Math.sqrt(dx*dx + dy*dy);
 
-        FindShortestPath(dx , dy , "");
-        if(!ShortestPath().isEmpty()  ) {
-            String s = ShortestPath();
+        double dx1 = dx / mau;
+        double dy1 = dy / mau;
+        FindShortestPath((int)x , (int)y , "");
+        if(!ShortestPath().isEmpty()) {
 
-            if(s.charAt(0) == 'D') {
-                state = State.Down;
-            }
-            if(s.charAt(0) == 'U') {
-                state = State.Up;
-            }
-            if(s.charAt(0) == 'R') {
+            if (dx1 > 0 && (dy1 < 1 / Math.sqrt(2) || dy1 > -1 / Math.sqrt(2))) {
                 state = State.Right;
             }
-            if(s.charAt(0) == 'L') {
+
+            if (dx1 < 0 && (dy1 < 1 / Math.sqrt(2) || dy1 > -1 / Math.sqrt(2))) {
                 state = State.Left;
             }
-            System.out.println(s);
-            duongdi.removeAll(duongdi);
-            kt = false;
+
+            if (dy1 > 0 && (dx1 < 1 / Math.sqrt(2) || dx1 > -1 / Math.sqrt(2))) {
+                state = State.Down;
+            }
+
+            if (dy1 < 0 && (dx1 < 1 / Math.sqrt(2) || dx1 > -1 / Math.sqrt(2))) {
+                state = State.Up;
+            }
         }
+
+
+
+//        FindShortestPath(dx , dy , "");
+//        if(!ShortestPath().isEmpty()  ) {
+//            String s = ShortestPath();
+//
+//            if(s.charAt(0) == 'D') {
+//                state = State.Down;
+//            }
+//            if(s.charAt(0) == 'U') {
+//                state = State.Up;
+//            }
+//            if(s.charAt(0) == 'R') {
+//                state = State.Right;
+//            }
+//            if(s.charAt(0) == 'L') {
+//                state = State.Left;
+//            }
+//            System.out.println(s);
+//            duongdi.removeAll(duongdi);
+//            kt = false;
+//        }
+
     }
 
     public String ShortestPath () {
@@ -219,21 +247,28 @@ public class Kondoria extends Monster {
 
     }
 
+
     @Override
     public boolean checkPosWall() {
-        if (state == State.Right && BombermanGame.hasWall[(int) (y)][(int) (x + 1)])
-            return false;
-
-        if (state == State.Left && BombermanGame.hasWall[(int) (y)][(int) (x - 0.25)])
-            return false;
-
-        if (state == State.Up && BombermanGame.hasWall[(int) (y - 0.25)][(int) x])
-            return false;
-
-        if (state == State.Down && BombermanGame.hasWall[(int) (y + 1)][(int) (x)])
-            return false;
+        if (x - (int) x == 0 && y - (int) y == 0) {
+            int x1 = (int) x;
+            int y1 = (int) y;
+            if(state == State.Down && BombermanGame.hasWall[y1+1][x1]) {
+                return false;
+            }
+            else if(state == State.Up && BombermanGame.hasWall[y1-1][x1]) {
+                return false;
+            }
+            else if(state == State.Left && BombermanGame.hasWall[y1][x1-1]) {
+                return false;
+            }
+            else if(state == State.Right && BombermanGame.hasWall[y1][x1+1]) {
+                return false;
+            }
+        }
 
         return true;
+
     }
 
 }

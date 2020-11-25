@@ -100,7 +100,6 @@ public class Balloom extends Monster {
         }
     }
 
-
     public void Random () {
         if (rd == 0) {
             state = State.Down;

@@ -233,8 +233,11 @@ public class Bomb extends Entity{
 
                 // Nếu vị trí player trong khoảng của bom thì có thể đi qua bom ngược lại thì không
 
-                if( ! (Math.abs(Y-y)<1 && ( ( x>=X && x-X < 0.75 ) || ( x<=X  && X-x <1 ) ) ) )
+                if( ! (Math.abs(Y-y)<1 && ( ( x>=X && x-X < 0.75 ) || ( x<=X  && X-x <1 ) ) ) ) {
                     BombermanGame.hasWallPlayer[(int)y][(int)x] = true;
+                    BombermanGame.hasWall[(int)y][(int)x] = true;
+
+                }
 
 
 
@@ -296,6 +299,7 @@ public class Bomb extends Entity{
                   //  playMusic(PlayMusic.explosion_sound,true);
                     Brick.remove(stillObject,(int)x,(int)y,xMin,yMin,xMax,yMax);
 
+                    BombermanGame.hasWall[(int)y][(int)x] = false;
                     BombermanGame.hasWallPlayer[(int)y][(int)x] = false;
                     BombermanGame.hasWallMonster[(int)y][(int)x] = false;
                     draw = false;

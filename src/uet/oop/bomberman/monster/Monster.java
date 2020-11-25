@@ -33,56 +33,58 @@ public abstract class  Monster extends Entity {
 
 
        public void CheckMove() {
-            do {
-                if (state == State.Up) {
-                    if (!checkPosWall()) {
-                        state = State.Left;
-                    }
-                }
 
-                if (state == State.Down) {
-                    if (!checkPosWall()) {
-                        state = State.Right;
-                    }
-                }
+               do {
+                   if (state == State.Up) {
+                       if (!checkPosWall()) {
+                           state = State.Left;
+                       }
+                   }
 
-                if (state == State.Right) {
-                    if (!checkPosWall()) {
-                        state = State.Up;
-                    }
-                }
+                   if (state == State.Down) {
+                       if (!checkPosWall()) {
+                           state = State.Right;
+                       }
+                   }
 
-                if (state == State.Left) {
-                    if (!checkPosWall()) {
-                        state = State.Down;
-                    }
-                }
+                   if (state == State.Right) {
+                       if (!checkPosWall()) {
+                           state = State.Up;
+                       }
+                   }
 
-            } while (!checkPosWall());
+                   if (state == State.Left) {
+                       if (!checkPosWall()) {
+                           state = State.Down;
+                       }
+                   }
+
+               } while (!checkPosWall());
+
         }
 
         public boolean Check () {
 
             if( x  - (int) x == 0 && y - (int) y== 0 ) {
-                if(state == State.Right) {
+                if(  state == State.Right) {
                     if (!BombermanGame.hasWallMonster[(int) y + 1][(int) x]) {
                         return true;
                     }
                 }
 
-                if(state == State.Left) {
+                if( state == State.Left) {
                     if (!BombermanGame.hasWallMonster[(int) y - 1][(int) x]) {
                         return true;
                     }
                 }
 
-                if(state == State.Up) {
+                if( state == State.Up) {
                     if (!BombermanGame.hasWallMonster[(int) (y)][(int) x - 1]) {
                         return true;
                     }
                 }
 
-                if (state == State.Down) {
+                if ( state == State.Down) {
                     if (!BombermanGame.hasWallMonster[(int) y][(int) x + 1]) {
                         return true;
                     }
@@ -107,8 +109,7 @@ public abstract class  Monster extends Entity {
                 return false;
 
             return true;
-        }
-
+       }
 
 
 
@@ -131,4 +132,5 @@ public abstract class  Monster extends Entity {
 
         }
     }
+
 }

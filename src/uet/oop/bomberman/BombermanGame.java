@@ -509,23 +509,24 @@ public class BombermanGame extends Application {
                 hasWallPlayer[i][j] = false;
                 hasWallMonster[i][j] = false;
                 isOk[i][j] = false;
-                  if (map.get(i).charAt(j) == '#') {
 
-                    Wall  object = new Wall(j, i, Sprite.wall.getFxImage());
-                        stillObjects.add(object);
-                        hasWallPlayer[i][j] = true;
-                        hasWallMonster[i][j] = true;
-                        hasWall[i][j] = true;
-                  }
-                  else if (map.get(i).charAt(j) == '*') {
-                     Brick object = new Brick(j, i, Sprite.brick.getFxImage());
-                      hasWallPlayer[i][j] = true;
-                      hasWallMonster[i][j] = true;
-                      stillObjects.add(object);
-                  }
+                if (map.get(i).charAt(j) == '#') {
 
-                     Grass grass = new Grass(j, i, Sprite.grass.getFxImage());
-                     grassList.add(grass);
+                            Wall  object = new Wall(j, i, Sprite.wall.getFxImage());
+                            stillObjects.add(object);
+                            hasWallPlayer[i][j] = true;
+                            hasWallMonster[i][j] = true;
+                            hasWall[i][j] = true;
+                }
+                else if (map.get(i).charAt(j) == '*') {
+                            Brick object = new Brick(j, i, Sprite.brick.getFxImage());
+                            hasWallPlayer[i][j] = true;
+                            hasWallMonster[i][j] = true;
+                            stillObjects.add(object);
+                }
+
+                Grass grass = new Grass(j, i, Sprite.grass.getFxImage());
+                grassList.add(grass);
 
             }
         }

@@ -101,14 +101,14 @@ public  class Entity {
         gc.drawImage(img, x * Sprite.SCALED_SIZE, y * Sprite.SCALED_SIZE);
 
     }
-//    public  void playMusic(String path, boolean isPlay) {
-//
-//        if(isPlay) {
-//            Media media = new Media(new File(path).toURI().toString());
-//            mediaPlayer = new MediaPlayer(media);
-//            mediaPlayer.play();
-//        }
-//    }
+    public  void playMusic(String path, boolean isPlay) {
+
+        if(isPlay) {
+            Media media = new Media(new File(path).toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.play();
+       }
+    }
 
 
     public  void update(double time) {}

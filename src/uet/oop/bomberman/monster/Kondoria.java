@@ -9,6 +9,7 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class Kondoria extends Monster {
@@ -16,11 +17,11 @@ public class Kondoria extends Monster {
     private Image[] imgKondoriaRight;
 
 
-    public boolean kt ;
-    public List <String> duongdi;
+    public boolean kt;
+    public List<String> duongdi;
 
-    public Kondoria (int x, int y, Image img) {
-        super(x, y , img);
+    public Kondoria(int x, int y, Image img) {
+        super(x, y, img);
         init();
 
     }
@@ -56,38 +57,36 @@ public class Kondoria extends Monster {
 
 
     @Override
-    public void  update (double deltaTime) {
+    public void update(double deltaTime) {
         totaltime += deltaTime;
 
-        if(dead) {
+        if (dead) {
             AnimationDead(deltaTime);
-        }
-        else {
+        } else {
             insertImg();
-            moving(deltaTime,0.2);
+            moving(deltaTime, 0.2);
         }
     }
 
 
     public void insertImg() {
-        if(state == State.Down || state == State.Right) {
+        if (state == State.Down || state == State.Right) {
             insertImgRight(0.3);
         }
 
-        if(state == State.Up || state == State.Left) {
+        if (state == State.Up || state == State.Left) {
             insertImgLeft(0.3);
         }
     }
 
-    public void  insertImgLeft(double time) {
+    public void insertImgLeft(double time) {
         if (totaltime <= 3 * time) {
             for (int i = 0; i < 3; i++) {
                 if (totaltime >= i * time) {
                     setImg(imgKondoriaLeft[i]);
                 }
             }
-        }
-        else {
+        } else {
             totaltime = 0.0f;
         }
     }
@@ -99,32 +98,31 @@ public class Kondoria extends Monster {
                     setImg(imgKondoriaRight[i]);
                 }
             }
-        }
-        else {
+        } else {
             totaltime = 0.0f;
         }
     }
 
     @Override
-    public void moving (double deltaTime,double timeSpeed) {
+    public void moving(double deltaTime, double timeSpeed) {
         totaltime1 += deltaTime;
 
-        if(totaltime1 >= timeSpeed) {
+        if (totaltime1 >= timeSpeed) {
 
             Animation();
 
             CheckMove();
-            if(state == State.Up) {
+            if (state == State.Up) {
                 y -= 0.25;
             }
-            if(state == State.Down) {
+            if (state == State.Down) {
 
                 y += 0.25;
             }
-            if(state == State.Right) {
+            if (state == State.Right) {
                 x += 0.25;
             }
-            if(state == State.Left) {
+            if (state == State.Left) {
                 x -= 0.25;
             }
 
@@ -138,68 +136,67 @@ public class Kondoria extends Monster {
         int x1 = (int) BombermanGame.bomberman.getX();
         int y1 = (int) BombermanGame.bomberman.getY();
 
-        if (Math.sqrt((x - x1)*(x - x1) + (y - y1)*(y - y1)) < 15) {
-            if(x - (int)x == 0 && y - (int) y == 0)
+        if (Math.sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1)) < 7) {
+            if (x - (int) x == 0 && y - (int) y == 0)
                 State();
         }
 
     }
 
-    public void State () {
+    public void State() {
         double dx = BombermanGame.bomberman.getX() - x;
         double dy = BombermanGame.bomberman.getY() - y;
-        double mau = Math.sqrt(dx*dx + dy*dy);
-
-        double dx1 = dx / mau;
-        double dy1 = dy / mau;
-        FindShortestPath((int)x , (int)y , "");
-        if(!ShortestPath().isEmpty()) {
-
-            if (dx1 > 0 && (dy1 < 1 / Math.sqrt(2) || dy1 > -1 / Math.sqrt(2))) {
-                state = State.Right;
-            }
-
-            if (dx1 < 0 && (dy1 < 1 / Math.sqrt(2) || dy1 > -1 / Math.sqrt(2))) {
-                state = State.Left;
-            }
-
-            if (dy1 > 0 && (dx1 < 1 / Math.sqrt(2) || dx1 > -1 / Math.sqrt(2))) {
-                state = State.Down;
-            }
-
-            if (dy1 < 0 && (dx1 < 1 / Math.sqrt(2) || dx1 > -1 / Math.sqrt(2))) {
-                state = State.Up;
-            }
-        }
-
-
-
-//        FindShortestPath(dx , dy , "");
-//        if(!ShortestPath().isEmpty()  ) {
-//            String s = ShortestPath();
+//        double mau = Math.sqrt(dx * dx + dy * dy);
 //
-//            if(s.charAt(0) == 'D') {
-//                state = State.Down;
-//            }
-//            if(s.charAt(0) == 'U') {
-//                state = State.Up;
-//            }
-//            if(s.charAt(0) == 'R') {
+//        double dx1 = dx / mau;
+//        double dy1 = dy / mau;
+//        FindShortestPath((int) x, (int) y, "");
+//        if (!ShortestPath().isEmpty()) {
+//
+//            if (dx1 > 0 && (dy1 < 1 / Math.sqrt(2) || dy1 > -1 / Math.sqrt(2))) {
 //                state = State.Right;
 //            }
-//            if(s.charAt(0) == 'L') {
+//
+//            if (dx1 < 0 && (dy1 < 1 / Math.sqrt(2) || dy1 > -1 / Math.sqrt(2))) {
 //                state = State.Left;
 //            }
-//            System.out.println(s);
-//            duongdi.removeAll(duongdi);
-//            kt = false;
+//
+//            if (dy1 > 0 && (dx1 < 1 / Math.sqrt(2) || dx1 > -1 / Math.sqrt(2))) {
+//                state = State.Down;
+//            }
+//
+//            if (dy1 < 0 && (dx1 < 1 / Math.sqrt(2) || dx1 > -1 / Math.sqrt(2))) {
+//                state = State.Up;
+//            }
 //        }
+
+
+        FindShortestPath((int)x , (int)y , "");
+        if(!ShortestPath().isEmpty()  ) {
+            String s = ShortestPath();
+
+            if(s.charAt(0) == 'D') {
+                state = State.Down;
+            }
+            if(s.charAt(0) == 'U') {
+                state = State.Up;
+            }
+            if(s.charAt(0) == 'R') {
+                state = State.Right;
+            }
+            if(s.charAt(0) == 'L') {
+                state = State.Left;
+            }
+            System.out.println(s);
+            duongdi.removeAll(duongdi);
+            kt = false;
+        }
 
     }
 
-    public String ShortestPath () {
+    public String ShortestPath() {
         String s = "";
-        if(!duongdi.isEmpty()) {
+        if (!duongdi.isEmpty()) {
             s = duongdi.get(0);
 
             for (String value : duongdi) {
@@ -214,31 +211,33 @@ public class Kondoria extends Monster {
 
     public void FindShortestPath(int x1, int y1, String ds) {
 
+        double X = BombermanGame.bomberman.getX();
+        double Y = BombermanGame.bomberman.getY();
+
         if (x1 == (int) BombermanGame.bomberman.getX() && y1 == (int) BombermanGame.bomberman.getY()) {
             kt = true;
             duongdi.add(ds);
-        }
-        else {
-            if (x1 < BombermanGame.WIDTH - 1 && !BombermanGame.hasWallMonster[y1][x1 + 1] && !BombermanGame.isOk[y1][x1 + 1]) {
+        } else if(Math.sqrt((X - x1) * (X- x1) + (Y - y1) * (Y - y1)) <= Math.sqrt((X - x) * (X- x) + (Y - y1) * (Y - y))){
+            if (x1 < BombermanGame.WIDTH - 1 && !BombermanGame.hasWall[y1][x1 + 1] && !BombermanGame.isOk[y1][x1 + 1]) {
                 BombermanGame.isOk[y1][x1] = true;
                 FindShortestPath(x1 + 1, y1, ds + "R");
                 BombermanGame.isOk[y1][x1] = false;
             }
 
-            if (y1 < BombermanGame.HEIGHT - 1 && !BombermanGame.hasWallMonster[y1 + 1][x1] && !BombermanGame.isOk[y1 + 1][x1]) {
+            if (y1 < BombermanGame.HEIGHT - 1 && !BombermanGame.hasWall[y1 + 1][x1] && !BombermanGame.isOk[y1 + 1][x1]) {
                 BombermanGame.isOk[y1][x1] = true;
                 FindShortestPath(x1, y1 + 1, ds + "D");
                 BombermanGame.isOk[y1][x1] = false;
             }
 
 
-            if (x1 > 0 && !BombermanGame.hasWallMonster[y1][x1 - 1] && !BombermanGame.isOk[y1][x1 - 1]) {
+            if (x1 > 0 && !BombermanGame.hasWall[y1][x1 - 1] && !BombermanGame.isOk[y1][x1 - 1]) {
                 BombermanGame.isOk[y1][x1] = true;
-                FindShortestPath(x1 -1 ,y1, ds + "L");
+                FindShortestPath(x1 - 1, y1, ds + "L");
                 BombermanGame.isOk[y1][x1] = false;
             }
 
-            if (y1 > 0 && !BombermanGame.hasWallMonster[y1 - 1][x1] && !BombermanGame.isOk[y1 - 1][x1]) {
+            if (y1 > 0 && !BombermanGame.hasWall[y1 - 1][x1] && !BombermanGame.isOk[y1 - 1][x1]) {
                 BombermanGame.isOk[y1][x1] = true;
                 FindShortestPath(x1, y1 - 1, ds + "U");
                 BombermanGame.isOk[y1][x1] = false;
@@ -253,16 +252,13 @@ public class Kondoria extends Monster {
         if (x - (int) x == 0 && y - (int) y == 0) {
             int x1 = (int) x;
             int y1 = (int) y;
-            if(state == State.Down && BombermanGame.hasWall[y1+1][x1]) {
+            if (state == State.Down && BombermanGame.hasWall[y1 + 1][x1]) {
                 return false;
-            }
-            else if(state == State.Up && BombermanGame.hasWall[y1-1][x1]) {
+            } else if (state == State.Up && BombermanGame.hasWall[y1 - 1][x1]) {
                 return false;
-            }
-            else if(state == State.Left && BombermanGame.hasWall[y1][x1-1]) {
+            } else if (state == State.Left && BombermanGame.hasWall[y1][x1 - 1]) {
                 return false;
-            }
-            else if(state == State.Right && BombermanGame.hasWall[y1][x1+1]) {
+            } else if (state == State.Right && BombermanGame.hasWall[y1][x1 + 1]) {
                 return false;
             }
         }
@@ -271,5 +267,6 @@ public class Kondoria extends Monster {
 
     }
 
-}
 
+
+}

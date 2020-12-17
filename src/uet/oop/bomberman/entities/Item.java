@@ -70,23 +70,33 @@ public class Item extends Entity{
 
     }
 
+    boolean CheckPos(double x , double X , double y , double Y) {
+        if( ((  Y -y <=0.75 &&  y < Y) || (int)Y == y )&& (int)x == (int)X)
+            return true;
+
+        if( ( (X-x <=0.5 && x < X ) || ((int)X == x ))   && (int)Y == (int)y)
+            return true;
+
+        return false;
+    }
+
     public void update(List<Bomb> bombs) {
 
         double X =  BombermanGame.bomberman.getX();
         double Y =  BombermanGame.bomberman.getY();
 
-        if(BombItem.isDraw() && X == BombItem.getX() && Y == BombItem.getY()){
+        if(BombItem.isDraw() && CheckPos(X,BombItem.x,Y,BombItem.y)){
 
             Bomb bomb = new Bomb();
             bombs.add(bomb);
             BombermanGame.bomberman.number_bomb ++;
             BombItem.setDraw(false);
 
-        } else if(SpeedItem.isDraw() && X == SpeedItem.getX() && Y == SpeedItem.getY()) {
+        } else if(SpeedItem.isDraw() && CheckPos(X,SpeedItem.x,Y,SpeedItem.y)) {
             SpeedItem.setDraw(false);
             BombermanGame.bomberman.setSpeed(BombermanGame.bomberman.getSpeed()-0.013);
 
-        } else if(FlameItem.isDraw() && X == FlameItem.getX() && Y == FlameItem.getY()) {
+        } else if(FlameItem.isDraw() && CheckPos(X,FlameItem.x,Y,FlameItem.y)) {
             FlameItem.setDraw(false);
             BombermanGame.bomberman.hasFlame = true;
         } else  if(Portal.isDraw() && X == Portal.getX() && Portal.getY() == Y && BombermanGame.monsters.isEmpty()) {
@@ -97,10 +107,10 @@ public class Item extends Entity{
                 if(BombermanGame.bomberman.level == 3)
                     BombermanGame.win = true;
 
-    //            BombermanGame.mediaPlayer.stop();
+                BombermanGame.mediaPlayer.stop();
 
                 Entity entity = new Entity();
-               // entity.playMusic(PlayMusic.stage_complete_music,true);
+                entity.playMusic(PlayMusic.stage_complete_music,true);
 
         }
     }

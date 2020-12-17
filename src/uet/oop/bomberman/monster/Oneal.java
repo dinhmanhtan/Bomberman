@@ -188,11 +188,13 @@ public class Oneal extends Monster{
 
     public void FindShortestPath(int x1, int y1, String ds) {
 
+        double X = BombermanGame.bomberman.getX();
+        double Y = BombermanGame.bomberman.getY();
         if (x1 == (int) BombermanGame.bomberman.getX() && y1 == (int) BombermanGame.bomberman.getY()) {
             kt = true;
             duongdi.add(ds);
         }
-        else {
+        else  if((Math.sqrt((X - x1) * (X- x1) + (Y - y1) * (Y - y1)) <= Math.sqrt((X - x) * (X- x) + (Y - y1) * (Y - y)))) {
             if (x1 < BombermanGame.WIDTH - 1 && !BombermanGame.hasWallMonster[y1][x1 + 1] && !BombermanGame.isOk[y1][x1 + 1]) {
                 BombermanGame.isOk[y1][x1] = true;
                 FindShortestPath(x1 + 1, y1, ds + "R");

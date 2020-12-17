@@ -94,22 +94,22 @@ public abstract class  Monster extends Entity {
             return false;
         }
 
-        public boolean checkPosWall() {
+    public boolean checkPosWall() {
 
-            if (state == State.Right && BombermanGame.hasWallMonster[(int) (y)][(int) (x + 1)])
-                return false;
+        if (state == State.Right && BombermanGame.hasWallMonster[(int) (y)][(int) (x + 1)])
+            return false;
 
-            if (state == State.Left && BombermanGame.hasWallMonster[(int) (y)][(int) (x - 0.25)])
-                return false;
+        if (state == State.Left && BombermanGame.hasWallMonster[(int) (y)][(int) (x - 0.25)])
+            return false;
 
-            if (state == State.Up && BombermanGame.hasWallMonster[(int) (y - 0.25)][(int) x])
-                return false;
+        if (state == State.Up && BombermanGame.hasWallMonster[(int) (y - 0.25)][(int) x])
+            return false;
 
-            if (state == State.Down && BombermanGame.hasWallMonster[(int) (y + 1)][(int) (x)])
-                return false;
+        if (state == State.Down && BombermanGame.hasWallMonster[(int) (y + 1)][(int) (x)])
+            return false;
 
-            return true;
-       }
+        return true;
+    }
 
 
 

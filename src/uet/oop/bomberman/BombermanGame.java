@@ -171,7 +171,7 @@ public class BombermanGame extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        stage.initStyle(StageStyle.UNDECORATED);   // cài đặt window bỏ thanh ở trên đầu
+      //  stage.initStyle(StageStyle.UNDECORATED);   // cài đặt window bỏ thanh ở trên đầu
       Init();
       TitleScreen(stage);
     }
